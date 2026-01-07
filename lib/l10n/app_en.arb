@@ -1,0 +1,11 @@
+{
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "welcome": "Welcome to Tryde!",
+  "@welcome": {
+    "description": "App welcome message"
+  }
+}
+

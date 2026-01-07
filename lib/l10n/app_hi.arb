@@ -1,0 +1,10 @@
+{
+  "helloWorld": "नमस्ते दुनिया!",
+  "@helloWorld": {
+    "description": "Hindi greeting"
+  },
+  "welcome": "ट्रायड में आपका स्वागत है!",
+  "@welcome": {
+    "description": "App welcome message in Hindi"
+  }
+}
