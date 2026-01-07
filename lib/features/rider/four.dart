@@ -46,10 +46,8 @@ class _DriverPickupVerificationScreenState
         title: const Text("Pickup Verification"),
         centerTitle: true,
       ),
-
       body: Column(
         children: [
-          /// 🔹 MAIN CONTENT
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -65,7 +63,6 @@ class _DriverPickupVerificationScreenState
                           NetworkImage("https://i.pravatar.cc/150?img=3"),
                         ),
                         const SizedBox(width: 14),
-
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +82,6 @@ class _DriverPickupVerificationScreenState
                             ],
                           ),
                         ),
-
                         Column(
                           children: const [
                             Icon(Icons.verified_user, color: Colors.green),
@@ -98,6 +94,33 @@ class _DriverPickupVerificationScreenState
                               ),
                             ),
                           ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// 🚨 EMERGENCY ACTIONS
+                  _card(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _EmergencyButton(
+                          icon: Icons.local_police,
+                          label: "Police",
+                          color: Colors.red,
+                          onTap: () {
+                            // TODO: Call Police
+                          },
+                        ),
+                        _EmergencyButton(
+                          icon: Icons.support_agent,
+                          label: "TRYDE",
+                          color: Colors.blue,
+                          onTap: () {
+                            // TODO: Call TRYDE Support
+                          },
                         ),
                       ],
                     ),
@@ -140,7 +163,7 @@ class _DriverPickupVerificationScreenState
 
                   const SizedBox(height: 16),
 
-                  /// 🚕 TRIP SUMMARY STRIP
+                  /// 🚕 TRIP SUMMARY
                   _card(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -154,17 +177,11 @@ class _DriverPickupVerificationScreenState
 
                   const SizedBox(height: 30),
 
-                  /// 🔐 OTP TITLE
                   const Text(
                     "Enter Trip OTP",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-
                   const SizedBox(height: 6),
-
                   const Text(
                     "Ask passenger for the OTP to start trip",
                     style: TextStyle(color: Colors.grey),
@@ -224,18 +241,10 @@ class _DriverPickupVerificationScreenState
             ),
           ),
 
-          /// 🔹 BOTTOM ACTION
+          /// 🔘 BOTTOM BUTTON
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                ),
-              ],
-            ),
+            color: Colors.white,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 54),
@@ -246,10 +255,7 @@ class _DriverPickupVerificationScreenState
               onPressed: _verifyOtp,
               child: const Text(
                 "Verify OTP & Start Trip",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -258,7 +264,6 @@ class _DriverPickupVerificationScreenState
     );
   }
 
-  /// 🔲 COMMON CARD
   Widget _card({required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -278,7 +283,44 @@ class _DriverPickupVerificationScreenState
   }
 }
 
-/// 📊 TRIP STAT WIDGET
+/// 🚨 EMERGENCY BUTTON
+class _EmergencyButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _EmergencyButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: color.withOpacity(0.12),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 📊 TRIP STAT
 class _TripStat extends StatelessWidget {
   final String title;
   final String value;
@@ -289,20 +331,11 @@ class _TripStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
-        ),
+        Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         const SizedBox(height: 6),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );

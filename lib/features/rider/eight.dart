@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tryde_partner/features/rider/nine.dart';
 
@@ -10,6 +11,7 @@ class DriverTripCompletedScreen extends StatelessWidget {
     final double distanceFare = 220;
     final double timeFare = 40;
     final double total = baseFare + distanceFare + timeFare;
+    final h = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Trip Completed")),
@@ -36,6 +38,18 @@ class DriverTripCompletedScreen extends StatelessWidget {
 
             _paymentStatusCard(),
 
+            const SizedBox(height: 20),
+
+            /// 📢 ADS BANNER (ADDED)
+            ImageAdsBanner(
+              height: h * 0.18,
+              adsImages: const [
+                "https://images.unsplash.com/photo-1607082352121-fa243f3dde32",
+                "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+                "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+              ],
+            ),
+
             const Spacer(),
 
             ElevatedButton(
@@ -48,11 +62,9 @@ class DriverTripCompletedScreen extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (_) => const RatePassengerScreen(),
                   ),
-
                 );
               },
               child: const Text("Rate User"),
-
             ),
           ],
         ),
@@ -108,6 +120,73 @@ class DriverTripCompletedScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// ================= IMAGE ADS BANNER =================
+
+class ImageAdsBanner extends StatefulWidget {
+  final List<String> adsImages;
+  final double height;
+  final Duration autoScrollDuration;
+
+  const ImageAdsBanner({
+    super.key,
+    required this.adsImages,
+    required this.height,
+    this.autoScrollDuration = const Duration(seconds: 2),
+  });
+
+  @override
+  State<ImageAdsBanner> createState() => _ImageAdsBannerState();
+}
+
+class _ImageAdsBannerState extends State<ImageAdsBanner> {
+  late PageController _controller;
+  Timer? _timer;
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+
+    _timer = Timer.periodic(widget.autoScrollDuration, (_) {
+      if (!_controller.hasClients) return;
+      _index = (_index + 1) % widget.adsImages.length;
+      _controller.animateToPage(
+        _index,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: widget.height,
+      child: PageView.builder(
+        controller: _controller,
+        itemCount: widget.adsImages.length,
+        itemBuilder: (_, i) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Image.network(
+              widget.adsImages[i],
+              fit: BoxFit.cover,
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tryde_partner/features/settings/screens/notification_screen.dart';
 
-class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+import 'driver_menu_screen.dart';
+
+/// ================= CUSTOM HOME APP BAR =================
+
+class CustomHomeAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final Function(bool)? onDutyChanged;
 
-  CustomHomeAppBar({super.key, this.onDutyChanged});
+  const CustomHomeAppBar({super.key, this.onDutyChanged});
 
   @override
   Size get preferredSize => const Size.fromHeight(70);
@@ -19,19 +24,32 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // LEFT MENU ICON
-            Icon(Icons.menu, size: 28, color: Colors.black),
+            /// ☰ MENU
+            IconButton(
+              icon: const Icon(Icons.menu, size: 28, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const DriverMenuScreen(),
+                  ),
+                );
+              },
+            ),
 
-            // CENTER SWITCH
-            DutySwitch(onChanged: onDutyChanged, initialValue: true),
+            /// 🔄 DUTY SWITCH
+            DutySwitch(
+              initialValue: true,
+              onChanged: onDutyChanged,
+            ),
 
-            // RIGHT ICONS
+            /// 🔔 RIGHT ICONS
             Row(
               children: [
-                Icon(Icons.favorite_outline, size: 25, color: Colors.black87),
+                const Icon(Icons.favorite_outline,
+                    size: 25, color: Colors.black87),
                 const SizedBox(width: 18),
 
-                // Bell + Notification Badge
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -50,14 +68,13 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: Colors.black87,
                       ),
                     ),
-
                     Positioned(
                       right: -2,
                       top: -2,
                       child: Container(
                         height: 18,
                         width: 18,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
@@ -84,14 +101,16 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
+/// ================= DUTY SWITCH =================
+
 class DutySwitch extends StatefulWidget {
   final ValueChanged<bool>? onChanged;
-  final bool initialValue; // ✅ ADD THIS
+  final bool initialValue;
 
   const DutySwitch({
     super.key,
     this.onChanged,
-    this.initialValue = true, // ✅ DEFAULT TRUE
+    this.initialValue = true,
   });
 
   @override
@@ -104,7 +123,7 @@ class _DutySwitchState extends State<DutySwitch> {
   @override
   void initState() {
     super.initState();
-    isOnDuty = widget.initialValue; // ✅ SET DEFAULT HERE
+    isOnDuty = widget.initialValue;
   }
 
   @override
@@ -116,37 +135,31 @@ class _DutySwitchState extends State<DutySwitch> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
         height: 38,
         width: 120,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: isOnDuty ? Colors.green : Colors.grey.shade300,
           borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Colors.grey.shade400, width: 1),
+          border: Border.all(color: Colors.grey.shade400),
         ),
         child: Stack(
           alignment: Alignment.centerLeft,
           children: [
-            /// TEXT
             Center(
               child: Text(
                 isOnDuty ? "ON" : "OFF",
                 style: TextStyle(
                   color: isOnDuty ? Colors.white : Colors.black54,
                   fontWeight: FontWeight.w600,
-                  fontSize: 13,
                 ),
               ),
             ),
-
-            /// THUMB
             AnimatedAlign(
               alignment: isOnDuty
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
               duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
               child: Container(
                 height: 26,
                 width: 26,

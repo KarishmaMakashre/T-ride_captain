@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryde_partner/core/constants/color_constants.dart';
 import 'package:tryde_partner/features/rider/custom_app_bar.dart';
 import 'package:tryde_partner/features/rider/second.dart';
@@ -14,6 +16,67 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isOnline = true;
   bool hasRideRequest = true;
 
+  final List<String> promoBanners = [
+    "🎁 Complete 5 trips & earn ₹200 bonus",
+    "🏆 Weekly Rewards unlocked!",
+  ];
+
+  /// 🔥 ADS IMAGE URLS
+  final List<String> adsImages = [
+    "https://images.unsplash.com/photo-1607082352121-fa243f3dde32",
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _showFirstTimePopup();
+  }
+
+  Future<void> _showFirstTimePopup() async {
+    final prefs = await SharedPreferences.getInstance();
+    final shown = prefs.getBool('caution_shown') ?? false;
+
+    if (!shown) {
+      Future.delayed(Duration.zero, () {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => AlertDialog(
+            title: const Text("⚠️ Important Instructions"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text("• Location access is required"),
+                Text("• Background tracking used during trips"),
+                Text("• Follow pickup & drop rules"),
+                SizedBox(height: 10),
+                Text(
+                  "🔗 Terms & Conditions",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  await prefs.setBool('caution_shown', true);
+                  Navigator.pop(context);
+                },
+                child: const Text("Agree & Continue"),
+              )
+            ],
+          ),
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,70 +89,67 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
       ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            children: [
+              if (isOnline && hasRideRequest) _incomingRideCard(),
+              const SizedBox(height: 10),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-
-            /// 🚨 INCOMING RIDE REQUEST (HERO SECTION)
-            if (isOnline && hasRideRequest)
-              _incomingRideCard(),
-
-            const SizedBox(height: 20),
-
-            /// 📊 STATS
-            Row(
-              children: [
-                Expanded(
-                  child: _statCard(
-                    title: "Today Earnings",
-                    value: "₹1,250",
-                    icon: Icons.currency_rupee,
-                    color: AppColors.success,
+              Row(
+                children: [
+                  Expanded(
+                    child: _statCard(
+                      title: "Today Earnings",
+                      value: "₹1,250",
+                      icon: Icons.account_balance_wallet,
+                      color: AppColors.success,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _statCard(
-                    title: "Trips",
-                    value: "8",
-                    icon: Icons.route,
-                    color: AppColors.info,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _statCard(
+                      title: "Trips",
+                      value: "8",
+                      icon: Icons.route,
+                      color: AppColors.info,
+                    ),
                   ),
-                ),
-              ],
-            ),
-
-            const Spacer(),
-
-            Text(
-              "Porter Driver Mode",
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.greyText,
-                fontWeight: FontWeight.w500,
+                ],
               ),
-            ),
-          ],
+
+              const SizedBox(height: 20),
+              _promoSection(),
+              const SizedBox(height: 12),
+
+              /// 📢 IMAGE ADS BANNER
+              ImageAdsBanner(
+                adsImages: adsImages,
+              ),
+
+              const SizedBox(height: 12),
+              Text(
+                "Porter Driver Mode",
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.greyText,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  /// 🚕 INCOMING RIDE CARD
+  /// 🚕 RIDE CARD
   Widget _incomingRideCard() {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.white,
-            Colors.green.shade50,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -102,59 +162,27 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          /// HEADER
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppColors.success.withOpacity(0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.notifications_active,
-                    color: AppColors.success),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text(
-                  "New Ride Request",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const Text(
-                "00:25",
-                style: TextStyle(
-                  color: AppColors.error,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          const Text(
+            "New Ride Request",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-
           const SizedBox(height: 16),
-
+          const Text("Pickup Location",
+              style: TextStyle(fontSize: 12, color: Colors.grey)),
           _locationRow(
             icon: Icons.radio_button_checked,
-            label: "Pickup",
             value: "Bhopal Railway Station",
             color: AppColors.success,
           ),
-
           const SizedBox(height: 10),
-
+          const Text("Drop Location",
+              style: TextStyle(fontSize: 12, color: Colors.grey)),
           _locationRow(
             icon: Icons.location_on,
-            label: "Drop",
             value: "MP Nagar Zone 2",
             color: AppColors.error,
           ),
-
           const Divider(height: 28),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
@@ -163,43 +191,18 @@ class _HomeScreenState extends State<HomeScreen> {
               _InfoTile(title: "Payment", value: "Cash"),
             ],
           ),
-
           const SizedBox(height: 18),
-
-          /// ACTION BUTTONS
           Row(
             children: [
               Expanded(
                 child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.error),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() => hasRideRequest = false);
-                  },
-                  child: const Text(
-                    "Reject",
-                    style: TextStyle(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  onPressed: () => setState(() => hasRideRequest = false),
+                  child: const Text("Reject"),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.success,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -208,13 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   },
-                  child: const Text(
-                    "Accept Ride",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: const Text("Accept Ride"),
                 ),
               ),
             ],
@@ -224,45 +221,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// 📍 LOCATION ROW
+  Widget _promoSection() {
+    return SizedBox(
+      height: 90,
+      child: PageView.builder(
+        itemCount: promoBanners.length,
+        itemBuilder: (_, i) => _promoCard(promoBanners[i]),
+      ),
+    );
+  }
+
+  Widget _promoCard(String text) {
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.info.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
   Widget _locationRow({
     required IconData icon,
-    required String label,
     required String value,
     required Color color,
   }) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, color: color, size: 18),
         const SizedBox(width: 10),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.greyText,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
         ),
       ],
     );
   }
 
-  /// 📦 STAT CARD
   Widget _statCard({
     required String title,
     required String value,
@@ -275,11 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10),
         ],
       ),
       child: Column(
@@ -287,27 +287,88 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon, color: color),
           const SizedBox(height: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 13,
-              color: AppColors.greyText,
-            ),
-          ),
+          Text(value,
+              style:
+              const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          Text(title,
+              style: TextStyle(fontSize: 13, color: AppColors.greyText)),
         ],
       ),
     );
   }
 }
 
-/// ℹ️ INFO TILE
+/// ================= IMAGE ADS BANNER =================
+
+class ImageAdsBanner extends StatefulWidget {
+  final List<String> adsImages;
+  final double height;
+  final Duration autoScrollDuration;
+
+  const ImageAdsBanner({
+    super.key,
+    required this.adsImages,
+    this.height = 170,
+    this.autoScrollDuration = const Duration(seconds: 2),
+  });
+
+  @override
+  State<ImageAdsBanner> createState() => _ImageAdsBannerState();
+}
+
+class _ImageAdsBannerState extends State<ImageAdsBanner> {
+  late PageController _pageController;
+  Timer? _timer;
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+
+    _timer = Timer.periodic(widget.autoScrollDuration, (_) {
+      if (!_pageController.hasClients || widget.adsImages.isEmpty) return;
+
+      _index = (_index + 1) % widget.adsImages.length;
+      _pageController.animateToPage(
+        _index,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: widget.height,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: widget.adsImages.length,
+        itemBuilder: (_, i) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: Image.network(
+                widget.adsImages[i],
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _InfoTile extends StatelessWidget {
   final String title;
   final String value;
@@ -318,21 +379,12 @@ class _InfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColors.greyText,
-          ),
-        ),
+        Text(title,
+            style: TextStyle(fontSize: 12, color: AppColors.greyText)),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(value,
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
   }

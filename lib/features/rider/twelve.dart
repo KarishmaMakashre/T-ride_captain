@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryde_partner/core/constants/color_constants.dart';
-import 'package:tryde_partner/features/rider/first.dart';
-// import 'package:tryde_partner/features/customer/screens/home_screen.dart';
+import 'package:tryde_partner/features/rider/first.dart'; // HomeScreen
 
 class WalletPayoutScreen extends StatelessWidget {
   const WalletPayoutScreen({super.key});
@@ -36,25 +34,27 @@ class WalletPayoutScreen extends StatelessWidget {
 
             const Spacer(),
 
+            /// ✅ GO TO DASHBOARD → HOME SCREEN
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
+                minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () async {
                 final prefs = await SharedPreferences.getInstance();
                 final role = prefs.getString('user_role');
                 print('User role from prefs: $role');
 
-                if (role == 'rider') {
-                  context.go('/home');
-                } else if (role == 'porter') {
-                  context.go('/porter-dashboard');
-                } else {
-                  // fallback (safety)
-                  context.go('/login');
-                }
+                // 🔥 DIRECT HOME SCREEN
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const HomeScreen(),
+                  ),
+                      (route) => false,
+                );
               },
-              child: const Text("Go to dashboard "),
+              child: const Text("Go to dashboard"),
             ),
           ],
         ),
@@ -68,7 +68,10 @@ class WalletPayoutScreen extends StatelessWidget {
         title: Text(title),
         trailing: Text(
           value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
     );
