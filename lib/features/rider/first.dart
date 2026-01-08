@@ -16,16 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isOnline = true;
   bool hasRideRequest = true;
 
-  final List<String> promoBanners = [
-    "🎁 Complete 5 trips & earn ₹200 bonus",
-    "🏆 Weekly Rewards unlocked!",
-  ];
-
   /// 🔥 ADS IMAGE URLS
   final List<String> adsImages = [
-    "https://images.unsplash.com/photo-1607082352121-fa243f3dde32",
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS32zMxm2aMKQQ3gfObn2_70nDZtn6SBw93Yw&s",
   ];
 
   @override
@@ -93,42 +86,137 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (isOnline && hasRideRequest) _incomingRideCard(),
+
+              /// 📊 TODAY PERFORMANCE
+              const Text(
+                "Today's performance",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
               const SizedBox(height: 10),
 
               Row(
                 children: [
+
+                  /// 💰 FIRST CARD — TODAY EARNINGS
                   Expanded(
-                    child: _statCard(
-                      title: "Today Earnings",
-                      value: "₹1,250",
-                      icon: Icons.account_balance_wallet,
-                      color: AppColors.success,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.account_balance_wallet,
+                            color: AppColors.success,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Today Earnings",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "₹ 1,250",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+
+                  const SizedBox(width: 10),
+
+                  /// 🚗 SECOND CARD — TRIPS
                   Expanded(
-                    child: _statCard(
-                      title: "Trips",
-                      value: "8",
-                      icon: Icons.route,
-                      color: AppColors.info,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.route,
+                            color: AppColors.info,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Trips",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "8",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 20),
-              _promoSection(),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
 
-              /// 📢 IMAGE ADS BANNER
+              /// 🚕 INCOMING RIDE
+              if (isOnline && hasRideRequest) _incomingRideCard(),
+
+              const SizedBox(height: 20),
+
+              /// 🎁 OFFERS
+              const Text(
+                "Offers & Rewards",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
               ImageAdsBanner(
                 adsImages: adsImages,
               ),
 
               const SizedBox(height: 12),
+
               Text(
                 "Porter Driver Mode",
                 style: TextStyle(
@@ -150,39 +238,80 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "New Ride Request",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          /// 🔔 HEADER
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Incoming Ride",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  "00:25",
+                  style: TextStyle(
+                    color: AppColors.error,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          const Text("Pickup Location",
-              style: TextStyle(fontSize: 12, color: Colors.grey)),
+
+          const SizedBox(height: 14),
+
+          /// 🚕 NEW RIDE
+          Row(
+            children: const [
+              Icon(Icons.notifications_active,
+                  color: AppColors.success, size: 18),
+              SizedBox(width: 8),
+              Text(
+                "New Ride Request",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          /// 📍 PICKUP
           _locationRow(
             icon: Icons.radio_button_checked,
             value: "Bhopal Railway Station",
             color: AppColors.success,
           ),
+
           const SizedBox(height: 10),
-          const Text("Drop Location",
-              style: TextStyle(fontSize: 12, color: Colors.grey)),
+
+          /// 📍 DROP
           _locationRow(
             icon: Icons.location_on,
             value: "MP Nagar Zone 2",
             color: AppColors.error,
           ),
+
           const Divider(height: 28),
+
+          /// 📊 INFO
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
@@ -191,23 +320,43 @@ class _HomeScreenState extends State<HomeScreen> {
               _InfoTile(title: "Payment", value: "Cash"),
             ],
           ),
-          const SizedBox(height: 18),
+
+          const SizedBox(height: 20),
+
+          /// 🔘 ACTION BUTTONS
           Row(
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => setState(() => hasRideRequest = false),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    side: const BorderSide(color: AppColors.error),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () =>
+                      setState(() => hasRideRequest = false),
                   child: const Text("Reject"),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.success,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const DriverRideAcceptedScreen(),
+                        builder: (_) =>
+                        const DriverRideAcceptedScreen(),
                       ),
                     );
                   },
@@ -220,34 +369,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Widget _promoSection() {
-    return SizedBox(
-      height: 90,
-      child: PageView.builder(
-        itemCount: promoBanners.length,
-        itemBuilder: (_, i) => _promoCard(promoBanners[i]),
-      ),
-    );
-  }
-
-  Widget _promoCard(String text) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.info.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
-  }
-
   Widget _locationRow({
     required IconData icon,
     required String value,
@@ -279,95 +400,125 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color),
           const SizedBox(height: 10),
-          Text(value,
-              style:
-              const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-          Text(title,
-              style: TextStyle(fontSize: 13, color: AppColors.greyText)),
+
+          /// VALUE
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          /// TITLE (Styled)
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.3,
+              color: AppColors.greyText,
+            ),
+          ),
         ],
       ),
     );
   }
+
+
 }
 
 /// ================= IMAGE ADS BANNER =================
 
-class ImageAdsBanner extends StatefulWidget {
+class ImageAdsBanner extends StatelessWidget {
   final List<String> adsImages;
   final double height;
-  final Duration autoScrollDuration;
 
   const ImageAdsBanner({
     super.key,
     required this.adsImages,
     this.height = 170,
-    this.autoScrollDuration = const Duration(seconds: 2),
   });
 
   @override
-  State<ImageAdsBanner> createState() => _ImageAdsBannerState();
-}
-
-class _ImageAdsBannerState extends State<ImageAdsBanner> {
-  late PageController _pageController;
-  Timer? _timer;
-  int _index = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-
-    _timer = Timer.periodic(widget.autoScrollDuration, (_) {
-      if (!_pageController.hasClients || widget.adsImages.isEmpty) return;
-
-      _index = (_index + 1) % widget.adsImages.length;
-      _pageController.animateToPage(
-        _index,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    if (adsImages.isEmpty) return const SizedBox();
+
     return SizedBox(
-      height: widget.height,
-      child: PageView.builder(
-        controller: _pageController,
-        itemCount: widget.adsImages.length,
-        itemBuilder: (_, i) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.network(
-                widget.adsImages[i],
+      height: height,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+
+              /// 🖼 IMAGE
+              Image.network(
+                adsImages.first,
                 fit: BoxFit.cover,
               ),
-            ),
-          );
-        },
+
+              /// 🌫 DARK GRADIENT (for text readability)
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.65),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+
+              /// 📝 TEXT
+              Positioned(
+                bottom: 12,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text(
+                    "Complete more trips & earn bonus 🚀",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
+
+
 
 class _InfoTile extends StatelessWidget {
   final String title;

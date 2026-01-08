@@ -175,7 +175,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 30, // ⬇ 36 → 30
             begin: Offset(-100, size.height * 0.6),
             end: Offset(size.width + 120, -200),
-            duration: 32.seconds,
+            duration: 3.seconds,
           ),
 
           // 🚚 Truck
@@ -185,7 +185,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 32, // ⬇ 40 → 32
             begin: Offset(size.width + 120, size.height),
             end: const Offset(-200, -300),
-            duration: 38.seconds,
+            duration: 3.seconds,
           ),
 
           // 🛵 Moped
@@ -195,7 +195,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 26, // ⬇ 32 → 26
             begin: const Offset(-200, 900),
             end: const Offset(600, -400),
-            duration: 28.seconds,
+            duration: 8.seconds,
           ),
 
           // 🚲 Bike (depth)
@@ -205,7 +205,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 22, // ⬇ 26 → 22
             begin: Offset(size.width * 0.2, size.height + 200),
             end: Offset(-300, -300),
-            duration: 40.seconds,
+            duration: 4.seconds,
           ),
 
           // 📦 Parcel
@@ -215,7 +215,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 24, // ⬇ 30 → 24
             begin: const Offset(600, 800),
             end: const Offset(-400, -200),
-            duration: 34.seconds,
+            duration: 16.seconds,
           ),
 
           // 🛒 Shopping bag
@@ -225,7 +225,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 18, // ⬇ 22 → 18
             begin: const Offset(-150, 500),
             end: const Offset(500, -250),
-            duration: 45.seconds,
+            duration: 10.seconds,
           ),
 
           // 🛵 Delivery dining
@@ -235,7 +235,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 28, // ⬇ 34 → 28
             begin: Offset(size.width * 0.8, size.height + 150),
             end: const Offset(-250, -350),
-            duration: 42.seconds,
+            duration: 8.seconds,
           ),
 
           // 🚚 Fire truck (logistics)
@@ -245,7 +245,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 34, // ⬇ 42 → 34
             begin: const Offset(-300, 700),
             end: const Offset(700, -300),
-            duration: 48.seconds,
+            duration: 4.seconds,
           ),
 
           // 📍 Location pin
@@ -255,7 +255,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 22, // ⬇ 26 → 22
             begin: Offset(size.width * 0.5, size.height + 300),
             end: const Offset(200, -400),
-            duration: 44.seconds,
+            duration: 10.seconds,
           ),
 
           // ⏱ Time
@@ -265,7 +265,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 20, // ⬇ 24 → 20
             begin: const Offset(50, 600),
             end: const Offset(500, -300),
-            duration: 50.seconds,
+            duration: 5.seconds,
           ),
 
           // 📱 Phone
@@ -275,7 +275,7 @@ class _PartnerTypeSelectionScreenState extends State<PartnerTypeSelectionScreen>
             size: 18, // ⬇ 22 → 18
             begin: const Offset(400, 900),
             end: const Offset(-200, -250),
-            duration: 55.seconds,
+            duration: 10.seconds,
           ),
         ],
 

@@ -1,7 +1,9 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:tryde_partner/features/food/partner_profile_screen.dart';
 import 'package:tryde_partner/features/food/wallet_screen.dart';
 import '../../core/constants/color_constants.dart';
+import 'oder_screen.dart';
 import 'order_req_screen.dart';
 
 double sw(BuildContext context) => MediaQuery.of(context).size.width;
@@ -18,7 +20,13 @@ class PartnerDashboardScreen extends StatefulWidget {
 
 class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
   int _currentIndex = 0;
-  bool _isOnline = true;
+  bool _isOnline = false; // 🔴 default OFF (recommended)
+
+  static const String onlineSoundUrl =
+      "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg";
+
+  static const String offlineSoundUrl =
+      "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg";
 
   final List<Widget> _screens = const [
     DashboardHome(),
@@ -32,10 +40,20 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.grey100,
       appBar: _buildAppBar(),
-      body: _screens[_currentIndex],
+
+      /// 🔥 MAIN LOGIC
+      body: _isOnline
+          ? const OrderRequestScreen() // ✅ ONLINE → New Order
+          : _screens[_currentIndex],   // ❌ OFFLINE → Dashboard
+
+      /// 🔒 Bottom Nav disabled when online
       bottomNavigationBar: PartnerBottomNav(
         currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
+        onTap: (i) {
+          if (!_isOnline) {
+            setState(() => _currentIndex = i);
+          }
+        },
       ),
     );
   }
@@ -47,17 +65,38 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Text("Good Afternoon 👋",
-              style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-          Text("Delivery Partner",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            "Welcome 👋",
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          Text(
+            "Delivery Partner",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
       actions: [
-        GestureDetector(
-          onTap: () => setState(() => _isOnline = !_isOnline),
-          child: _OnlineStatusChip(isOnline: _isOnline),
+        /// 🔁 ONLINE / OFFLINE TOGGLE
+        OnlineStatusToggle(
+          initialStatus: _isOnline,
+          onChanged: (value) {
+            setState(() {
+              _isOnline = value;
+
+              /// 🔥 ONLINE hone par index reset
+              if (value) {
+                _currentIndex = 0;
+              }
+            });
+          },
         ),
+
         IconButton(
           icon: const Icon(Icons.notifications_none),
           onPressed: () {},
@@ -120,26 +159,82 @@ class SectionTitle extends StatelessWidget {
 }
 
 /// ===================== ONLINE CHIP =====================
-class _OnlineStatusChip extends StatelessWidget {
-  final bool isOnline;
-  const _OnlineStatusChip({required this.isOnline});
+
+class OnlineStatusToggle extends StatefulWidget {
+  final bool initialStatus;
+  final ValueChanged<bool>? onChanged;
+
+  const OnlineStatusToggle({
+    super.key,
+    required this.initialStatus,
+    this.onChanged,
+  });
+
+  @override
+  State<OnlineStatusToggle> createState() => _OnlineStatusToggleState();
+}
+
+class _OnlineStatusToggleState extends State<OnlineStatusToggle> {
+  late bool isOnline;
+
+  @override
+  void initState() {
+    super.initState();
+    isOnline = widget.initialStatus;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: isOnline
-            ? AppColors.success.withOpacity(0.15)
-            : AppColors.error.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        isOnline ? "ONLINE" : "OFFLINE",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: isOnline ? AppColors.success : AppColors.error,
+    return GestureDetector(
+      onTap: () {
+        setState(() => isOnline = !isOnline);
+        widget.onChanged?.call(isOnline);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 90,
+        height: 36,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: isOnline
+              ? AppColors.success
+              : AppColors.error,
+        ),
+        child: Stack(
+          children: [
+            // ON / OFF TEXT
+            Align(
+              alignment:
+              isOnline ? Alignment.centerLeft : Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  isOnline ? "ON" : "OFF",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+
+            // THUMB
+            AnimatedAlign(
+              duration: const Duration(milliseconds: 200),
+              alignment:
+              isOnline ? Alignment.centerRight : Alignment.centerLeft,
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

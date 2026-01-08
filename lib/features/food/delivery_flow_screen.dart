@@ -6,7 +6,6 @@ enum DeliveryStep {
   navigateToRestaurant,
   reachedRestaurant,
   pickupConfirmed,
-  outForDelivery,
   reachedCustomer,
   deliveryOtp,
 }
@@ -23,8 +22,8 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
   final TextEditingController otpController = TextEditingController();
 
   // Modern Theme Colors
-  final Color primaryColor = const Color(0xFF6366F1); // Indigo
-  final Color accentColor = const Color(0xFFF59E0B); // Amber
+  final Color primaryColor = const Color(0xFFFF6B6B); // Indigo
+  static const Color accentColor = Color.fromARGB(255, 255, 175, 175);
   final Color backgroundColor = const Color(0xFFF8FAFC);
 
   // Update the _nextStep function
@@ -133,7 +132,7 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
               padding: const EdgeInsets.all(20),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
-                child: _stepContent(currentStep),
+                // child: _stepContent(currentStep),
               ),
             ),
           ),
@@ -218,41 +217,40 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
   }
 
   /// ---------------- CONTENT LOGIC ----------------
-  Widget _stepContent(DeliveryStep step) {
-    switch (step) {
-      case DeliveryStep.navigateToRestaurant:
-        return _buildLocationCard(
-          title: "Pickup Point",
-          name: "Burger King - MG Road",
-          address: "Sector 4, Near Metro Station",
-          distance: "1.2 km",
-          eta: "5 mins",
-          icon: Icons.restaurant,
-        );
-      case DeliveryStep.reachedRestaurant:
-        return _buildInfoCard(
-          "Waiting for Kitchen",
-          "Order is being prepared. Please wait at the designated pickup counter.",
-          Icons.hourglass_bottom_rounded,
-          accentColor,
-        );
-      case DeliveryStep.pickupConfirmed:
-        return _buildChecklistCard();
-      case DeliveryStep.outForDelivery:
-        return _buildCustomerCard();
-      case DeliveryStep.reachedCustomer:
-        return _buildLocationCard(
-          title: "Delivery Point",
-          name: "Alex Johnson",
-          address: "Apt 4B, Sunset Boulevard",
-          distance: "0.2 km",
-          eta: "Now",
-          icon: Icons.person_pin_circle,
-        );
-      case DeliveryStep.deliveryOtp:
-        return _buildOtpEntry();
-    }
-  }
+  // Widget _stepContent(DeliveryStep step) {
+  //   switch (step) {
+  //     case DeliveryStep.navigateToRestaurant:
+  //       return _buildLocationCard(
+  //         title: "Pickup Point",
+  //         name: "Burger King - MG Road",
+  //         address: "Sector 4, Near Metro Station",
+  //         distance: "1.2 km",
+  //         eta: "5 mins",
+  //         icon: Icons.restaurant,
+  //       );
+  //     case DeliveryStep.reachedRestaurant:
+  //       return _buildInfoCard(
+  //         "Waiting for Kitchen",
+  //         "Order is being prepared. Please wait at the designated pickup counter.",
+  //         Icons.hourglass_bottom_rounded,
+  //         accentColor,
+  //       );
+  //     case DeliveryStep.pickupConfirmed:
+  //       return _buildChecklistCard();
+  //
+  //     case DeliveryStep.reachedCustomer:
+  //       return _buildLocationCard(
+  //         title: "Delivery Point",
+  //         name: "Alex Johnson",
+  //         address: "Apt 4B, Sunset Boulevard",
+  //         distance: "0.2 km",
+  //         eta: "Now",
+  //         icon: Icons.person_pin_circle,
+  //       );
+  //     case DeliveryStep.deliveryOtp:
+  //       return _buildOtpEntry();
+  //   }
+  // }
 
   /// ---------------- STYLISH COMPONENTS ----------------
 
@@ -270,20 +268,17 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
           height: 180,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.grey[300],
             borderRadius: BorderRadius.circular(24),
             image: const DecorationImage(
-              image: NetworkImage('https://api.placeholder.com/400/200'),
-              // Replace with actual Map snapshot
+              image: NetworkImage(
+                'https://media.istockphoto.com/id/1189064346/photo/city-map-with-pin-pointers-3d-rendering-image.webp?a=1&b=1&s=612x612&w=0&k=20&c=ATkI2VsMyZ2K4zk-Qq12g6cRpO2VJvt6UPPDb_sshSg='
+              ),
               fit: BoxFit.cover,
             ),
           ),
-          child: Center(
-            child: Icon(Icons.location_on, color: primaryColor, size: 40),
-          ),
         ),
-        const SizedBox(height: 20),
-        _detailTile(title, name, address, icon),
+        const SizedBox(height: 80),
+        _detailTile(title, name, address),
       ],
     );
   }
@@ -367,7 +362,7 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
     );
   }
 
-  Widget _detailTile(String label, String main, String sub, IconData icon) {
+  Widget _detailTile(String label, String main, String sub) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -382,32 +377,28 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
               color: primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: Icon(icon, color: primaryColor),
+            child: Image.network(
+              "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+              width: 28,
+              height: 28,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  main,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  sub,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
+                Text(label,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold)),
+                Text(main,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(sub,
+                    style:
+                    TextStyle(fontSize: 14, color: Colors.grey.shade600)),
               ],
             ),
           ),
@@ -415,6 +406,7 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
       ),
     );
   }
+
 
   Widget _actionBtn(IconData icon, String label, Color color) {
     return Container(

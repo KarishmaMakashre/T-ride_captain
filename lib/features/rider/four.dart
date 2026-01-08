@@ -99,32 +99,6 @@ class _DriverPickupVerificationScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 12),
-
-                  /// 🚨 EMERGENCY ACTIONS
-                  _card(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _EmergencyButton(
-                          icon: Icons.local_police,
-                          label: "Police",
-                          color: Colors.red,
-                          onTap: () {
-                            // TODO: Call Police
-                          },
-                        ),
-                        _EmergencyButton(
-                          icon: Icons.support_agent,
-                          label: "TRYDE",
-                          color: Colors.blue,
-                          onTap: () {
-                            // TODO: Call TRYDE Support
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
 
                   const SizedBox(height: 16),
 
@@ -236,6 +210,27 @@ class _DriverPickupVerificationScreenState
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 20),
+
+                  /// 🚨 LAST ROW EMERGENCY ICONS (NEW)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _BottomEmergencyIcon(
+                        icon: Icons.local_police,
+                        label: "Emergency\nPolice",
+                        color: Colors.red,
+                        onTap: () {},
+                      ),
+                      _BottomEmergencyIcon(
+                        icon: Icons.support_agent,
+                        label: "Emergency\nTRYDE",
+                        color: Colors.blue,
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -313,6 +308,47 @@ class _EmergencyButton extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 🚨 BOTTOM EMERGENCY ICON
+class _BottomEmergencyIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _BottomEmergencyIcon({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 26,
+            backgroundColor: color.withOpacity(0.15),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
         ],
       ),

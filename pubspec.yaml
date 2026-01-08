@@ -60,6 +60,8 @@ dependencies:
   video_player: ^2.10.1
   flutter_animate: ^4.5.2
   page_transition: ^2.2.1
+  audioplayers: ^6.5.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -93,7 +95,7 @@ flutter:
     - assets/images/
     - assets/images/vehicles/
     - assets/icons/
-    - assets/fonts/
+#    - assets/fonts/
     - assets/animations/
     - assets/goods/
 

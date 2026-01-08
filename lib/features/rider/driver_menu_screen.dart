@@ -22,7 +22,81 @@ class DriverMenuScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 12),
+
+          /// 👤 PROFILE HEADER
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+
+                /// Profile Image
+                const CircleAvatar(
+                  radius: 28,
+                  backgroundImage: NetworkImage(
+                    "https://randomuser.me/api/portraits/men/32.jpg",
+                  ),
+                ),
+
+                const SizedBox(width: 14),
+
+                /// Name + Role
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Rahul Sharma",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Driver Partner",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// 📞 Call Button
+                _actionIcon(
+                  icon: Icons.call,
+                  color: Colors.green,
+                  onTap: () {
+                    // TODO: Call action
+                  },
+                ),
+
+                const SizedBox(width: 8),
+
+                /// 💬 Message Button
+                _actionIcon(
+                  icon: Icons.message,
+                  color: Colors.blue,
+                  onTap: () {
+                    // TODO: Message action
+                  },
+                ),
+              ],
+            ),
+          ),
 
           /// 🔹 MENU LIST
           Expanded(
@@ -88,6 +162,26 @@ class DriverMenuScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// 🔘 ACTION ICON (CALL / MSG)
+  Widget _actionIcon({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: color, size: 20),
       ),
     );
   }

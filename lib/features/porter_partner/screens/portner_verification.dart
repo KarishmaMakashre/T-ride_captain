@@ -18,8 +18,7 @@ class _PickupVerificationMapScreenState
   final TextEditingController _otpController = TextEditingController();
 
   // 📍 DEFAULT IND0RE LOCATION
-  final gmaps.LatLng pickupLatLng =
-      const gmaps.LatLng(22.719568, 75.857727);
+  final gmaps.LatLng pickupLatLng = const gmaps.LatLng(22.719568, 75.857727);
 
   final String pickupAddress = "Vijay Nagar Square, Indore";
 
@@ -75,9 +74,7 @@ class _PickupVerificationMapScreenState
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(color: Colors.black26, blurRadius: 12),
-                ],
+                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 12)],
               ),
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
               child: SingleChildScrollView(
@@ -88,8 +85,10 @@ class _PickupVerificationMapScreenState
                     const SizedBox(height: 16),
                     _ownerDetails(),
                     const SizedBox(height: 16),
-                    _goodsSummary(),
+                    _receiverDetails(),
                     const SizedBox(height: 20),
+                    _goodsSummary(),
+                    const SizedBox(height: 16),
                     _otpInput(),
                     const SizedBox(height: 24),
                     _startRideButton(),
@@ -113,10 +112,7 @@ class _PickupVerificationMapScreenState
         Expanded(
           child: Text(
             pickupAddress,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
       ],
@@ -125,61 +121,68 @@ class _PickupVerificationMapScreenState
 
   /// 👤 OWNER DETAILS
   Widget _ownerDetails() {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: _card(),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 24,
-            backgroundColor: AppColors.primary,
-            child: Icon(Icons.person, color: Colors.white),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Rahul Sharma',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Goods Owner',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
+    return SizedBox(
+      width: double.infinity, // 🔥 SAME WIDTH
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: _card(),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 24,
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.person, color: Colors.white),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.call, color: Colors.green),
-            onPressed: () {},
-          ),
-        ],
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rahul Sharma',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text('Goods Owner', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.call, color: Colors.green),
+              onPressed: () {},
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  /// 📦 GOODS INFO
   Widget _goodsSummary() {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: _card(),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Goods Summary',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text('• Bed, Table, Chairs'),
-          Text('• Weight: 120 kg'),
-          Text('• Fragile items included'),
-        ],
+    return SizedBox(
+      width: double.infinity, // 🔥 SAME WIDTH
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: _card(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Goods Summary',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text('• Bed, Table, Chairs'),
+            Text('• Weight: 120 kg'),
+            Text('• Fragile items included'),
+          ],
+        ),
       ),
     );
   }
+
 
   /// 🔐 OTP INPUT
   Widget _otpInput() {
@@ -198,9 +201,7 @@ class _PickupVerificationMapScreenState
           decoration: InputDecoration(
             hintText: '4 Digit OTP',
             counterText: '',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         const SizedBox(height: 10),
@@ -225,10 +226,7 @@ class _PickupVerificationMapScreenState
         disabledBackgroundColor: Colors.grey,
         minimumSize: const Size(double.infinity, 54),
       ),
-      child: const Text(
-        'START RIDE',
-        style: TextStyle(fontSize: 18),
-      ),
+      child: const Text('START RIDE', style: TextStyle(fontSize: 18)),
     );
   }
 
@@ -236,13 +234,13 @@ class _PickupVerificationMapScreenState
   void _verifyOtp() {
     if (_otpController.text == correctOtp) {
       setState(() => isOtpVerified = true);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('OTP Verified ✅')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('OTP Verified ✅')));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid OTP ❌')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Invalid OTP ❌')));
     }
   }
 
@@ -271,6 +269,90 @@ class _PickupVerificationMapScreenState
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: Colors.grey.shade300),
       color: Colors.white,
+    );
+  }
+
+  /// 📦 RECEIVER DETAILS
+  final String receiverName = "Amit Verma";
+  final String receiverAddress = "MP Nagar Zone 1, Bhopal";
+  final String receiverMobile = "+91 9876543210";
+
+  void _callReceiver() async {
+    final uri = Uri.parse('tel:$receiverMobile');
+    // use url_launcher package
+  }
+
+  Widget _receiverDetails() {
+    return Material(
+      color: Colors.white, // 🔥 IMPORTANT
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: _card(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Receiver Details',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Colors.orange,
+                  child: Icon(Icons.home, color: Colors.white),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        receiverName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color:
+                              Colors.black, // 🔥 red hata ke test ke liye black
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        receiverAddress,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+
+                      Text(
+                        receiverMobile,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.call, color: Colors.green),
+                  onPressed: _callReceiver,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

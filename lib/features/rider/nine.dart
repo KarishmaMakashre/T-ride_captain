@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tryde_partner/features/rider/ten.dart';
 
@@ -13,6 +12,16 @@ class _RatePassengerScreenState extends State<RatePassengerScreen> {
   int rating = 5;
   final TextEditingController feedbackCtrl = TextEditingController();
 
+  final List<String> tags = [
+    "Polite",
+    "On time",
+    "Good location",
+    "Late",
+    "Wrong pickup",
+  ];
+
+  final Set<String> selectedTags = {};
+
   @override
   void dispose() {
     feedbackCtrl.dispose();
@@ -21,138 +30,205 @@ class _RatePassengerScreenState extends State<RatePassengerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Rate Passenger")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      backgroundColor: const Color(0xFFF7F7F7),
+      body: SafeArea(
         child: Column(
           children: [
-            const Text(
-              "How was your passenger?",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-            const SizedBox(height: 20),
+                    /// 🔙 Back + Title
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.arrow_back),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          "Rate Passenger",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (i) {
-                return IconButton(
-                  icon: Icon(
-                    Icons.star,
-                    size: 36,
-                    color: i < rating ? Colors.orange : Colors.grey,
-                  ),
-                  onPressed: () => setState(() => rating = i + 1),
-                );
-              }),
-            ),
+                    const SizedBox(height: 24),
 
-            TextField(
-              controller: feedbackCtrl,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                hintText: "Optional feedback",
-                border: OutlineInputBorder(),
+                    /// 👤 Passenger Card
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Row(
+                        children: const [
+                          CircleAvatar(
+                            radius: 26,
+                            backgroundImage: NetworkImage(
+                              "https://randomuser.me/api/portraits/men/32.jpg",
+                            ),
+                          ),
+                          SizedBox(width: 14),
+                          Text(
+                            "Rahul Sharma",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    /// ⭐ Question
+                    const Text(
+                      "How was your passenger?",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    /// ⭐ Rating Stars
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(5, (i) {
+                        return IconButton(
+                          icon: Icon(
+                            Icons.star,
+                            size: 36,
+                            color: i < rating
+                                ? Colors.orange
+                                : Colors.grey.shade300,
+                          ),
+                          onPressed: () => setState(() => rating = i + 1),
+                        );
+                      }),
+                    ),
+
+                    const Center(
+                      child: Text(
+                        "Excellent experience",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// 🏷 Feedback Chips
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: tags.map((tag) {
+                        final selected = selectedTags.contains(tag);
+                        return ChoiceChip(
+                          label: Text(tag),
+                          selected: selected,
+                          onSelected: (_) {
+                            setState(() {
+                              selected
+                                  ? selectedTags.remove(tag)
+                                  : selectedTags.add(tag);
+                            });
+                          },
+                          selectedColor: Colors.green.withOpacity(.15),
+                          labelStyle: TextStyle(
+                            color: selected ? Colors.green : Colors.black,
+                          ),
+                          side: BorderSide(
+                            color: selected
+                                ? Colors.green
+                                : Colors.grey.shade300,
+                          ),
+                          backgroundColor: Colors.white,
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    /// ✍ Feedback Field
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: TextField(
+                        controller: feedbackCtrl,
+                        maxLines: 5,
+                        decoration: const InputDecoration(
+                          hintText: "Additional feedback (optional)",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// 🖼 Image
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.network(
+                        "https://images.unsplash.com/photo-1520975916090-3105956dac38",
+                        height: w * 0.45,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+
+                    const SizedBox(height: 80), // space for button
+                  ],
+                ),
               ),
             ),
 
-            const SizedBox(height: 20),
-
-            /// 📢 ADS BANNER (ADDED)
-            ImageAdsBanner(
-              height: h * 0.18,
-              adsImages: const [
-                "https://images.unsplash.com/photo-1607082352121-fa243f3dde32",
-                "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-                "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-              ],
-            ),
-
-            const Spacer(),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const EarningsUpdatedScreen(),
+            /// ✅ Fixed Bottom Button
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
-                );
-              },
-              child: const Text("Submit Rating"),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const EarningsUpdatedScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Submit Rating",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// ================= IMAGE ADS BANNER =================
-
-class ImageAdsBanner extends StatefulWidget {
-  final List<String> adsImages;
-  final double height;
-  final Duration autoScrollDuration;
-
-  const ImageAdsBanner({
-    super.key,
-    required this.adsImages,
-    required this.height,
-    this.autoScrollDuration = const Duration(seconds: 2),
-  });
-
-  @override
-  State<ImageAdsBanner> createState() => _ImageAdsBannerState();
-}
-
-class _ImageAdsBannerState extends State<ImageAdsBanner> {
-  late PageController _controller;
-  Timer? _timer;
-  int _index = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = PageController();
-
-    _timer = Timer.periodic(widget.autoScrollDuration, (_) {
-      if (!_controller.hasClients) return;
-      _index = (_index + 1) % widget.adsImages.length;
-      _controller.animateToPage(
-        _index,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: widget.height,
-      child: PageView.builder(
-        controller: _controller,
-        itemCount: widget.adsImages.length,
-        itemBuilder: (_, i) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: Image.network(
-              widget.adsImages[i],
-              fit: BoxFit.cover,
-            ),
-          );
-        },
       ),
     );
   }

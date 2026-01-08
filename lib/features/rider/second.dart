@@ -94,15 +94,24 @@ class DriverRideAcceptedScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Offers & Rewards",
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
 
+            SizedBox(height: 10,),
             /// 📢 ADS BANNER (ADDED)
             ImageAdsBanner(
               height: h * 0.18,
               adsImages: const [
                 "https://images.unsplash.com/photo-1607082352121-fa243f3dde32",
-                "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-                "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
               ],
             ),
 
