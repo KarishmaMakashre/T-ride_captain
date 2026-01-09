@@ -62,6 +62,8 @@ class OrderCard extends StatelessWidget {
             builder: (_) => const OrderRequestBottomSheet(),
           );
         },
+
+
       ),
     );
   }
@@ -473,8 +475,6 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 25),
-          _ProgressStepper(currentStep: currentStep, activeColor: AppColors.foodPrimary),
         ],
       ),
     );
@@ -530,13 +530,13 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
     return Column(
       children: [
         Container(
-          height: 180,
+          height: 300,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(24),
             image: const DecorationImage(
-              image: NetworkImage('https://api.placeholder.com/400/200'),
+              image: NetworkImage('https://staticmapmaker.com/img/google-placeholder.png'),
               // Replace with actual Map snapshot
               fit: BoxFit.cover,
             ),

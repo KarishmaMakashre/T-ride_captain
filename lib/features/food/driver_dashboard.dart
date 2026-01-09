@@ -42,9 +42,7 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
       appBar: _buildAppBar(),
 
       /// 🔥 MAIN LOGIC
-      body: _isOnline
-          ? const OrderRequestScreen() // ✅ ONLINE → New Order
-          : _screens[_currentIndex],   // ❌ OFFLINE → Dashboard
+      body:_screens[_currentIndex],   // ❌ OFFLINE → Dashboard
 
       /// 🔒 Bottom Nav disabled when online
       bottomNavigationBar: PartnerBottomNav(
@@ -88,14 +86,23 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
           onChanged: (value) {
             setState(() {
               _isOnline = value;
-
-              /// 🔥 ONLINE hone par index reset
               if (value) {
                 _currentIndex = 0;
               }
             });
+
+            // ✅ ONLINE hone par bottom sheet open
+            if (value) {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => const OrderRequestBottomSheet(),
+              );
+            }
           },
         ),
+
 
         IconButton(
           icon: const Icon(Icons.notifications_none),
