@@ -515,3 +515,180 @@ class _GridPainter extends CustomPainter {
   @override
   bool shouldRepaint(_) => false;
 }
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:tryde_partner/core/constants/color_constants.dart';
+
+// class PartnerTypeSelectionScreen extends StatelessWidget {
+//   const PartnerTypeSelectionScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: SafeArea(
+//         child: Column(
+//           children: [
+//             /// ================= TOP BANNER =================
+//             Stack(
+//               children: [
+//                 ShaderMask(
+//                   shaderCallback: (rect) {
+//                     return const LinearGradient(
+//                       begin: Alignment.topCenter,
+//                       end: Alignment.bottomCenter,
+//                       colors: [Colors.black, Colors.transparent],
+//                       stops: [0.6, 1.0],
+//                     ).createShader(rect);
+//                   },
+//                   blendMode: BlendMode.dstIn,
+//                   child: Image.asset(
+//                     'assets/images/top-banner.png',
+//                     height: 260,
+//                     width: double.infinity,
+//                     fit: BoxFit.cover,
+//                   ),
+//                 ),
+
+//                 Positioned(
+//                   bottom: 30,
+//                   left: 16,
+//                   right: 16,
+//                   child: Column(
+//                     children: const [
+//                       Text(
+//                         'Select Your Role',
+//                         style: TextStyle(
+//                           fontSize: 26,
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//                       SizedBox(height: 6),
+//                       Text(
+//                         'Choose how you want to work with us',
+//                         style: TextStyle(
+//                           fontSize: 14,
+//                           color: Colors.black54,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+
+//             const SizedBox(height: 20),
+
+//             /// ================= ROLES =================
+//             Padding(
+//               padding: const EdgeInsets.symmetric(horizontal: 20),
+//               child: Column(
+//                 children: [
+//                   _roleCard(
+//                     context,
+//                     title: "Rider",
+//                     image: 'assets/images/rider-role.png',
+//                     onTap: () {
+//                       context.push('/login?r= rider');
+//                     },
+//                   ),
+//                   const SizedBox(height: 16),
+
+//                   _roleCard(
+//                     context,
+//                     title: "Porter",
+//                     image: 'assets/images/porter-role.png',
+//                     onTap: () {
+//                       context.push('/login?r=porter');
+//                     },
+//                   ),
+//                   const SizedBox(height: 16),
+
+//                   _roleCard(
+//                     context,
+//                     title: "Food Delivery",
+//                     image: 'assets/images/.png',
+//                     onTap: () {
+//                       context.push('/login?r=food');
+//                     },
+//                   ),
+//                 ],
+//               ),
+//             ),
+
+//             const Spacer(),
+
+//             /// ================= BOTTOM BANNER =================
+//             ShaderMask(
+//               shaderCallback: (rect) {
+//                 return const LinearGradient(
+//                   begin: Alignment.topCenter,
+//                   end: Alignment.bottomCenter,
+//                   colors: [Colors.transparent, Colors.black],
+//                   stops: [0.0, 0.35],
+//                 ).createShader(rect);
+//               },
+//               blendMode: BlendMode.dstIn,
+//               child: Image.asset(
+//                 'assets/images/bottom-banner.png',
+//                 width: double.infinity,
+//                 fit: BoxFit.cover,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   /// ================= ROLE CARD =================
+//   Widget _roleCard(
+//     BuildContext context, {
+//     required String title,
+//     required String image,
+//     required VoidCallback onTap,
+//   }) {
+//     return InkWell(
+//       borderRadius: BorderRadius.circular(16),
+//       onTap: onTap,
+//       child: Container(
+//         height: 90,
+//         padding: const EdgeInsets.symmetric(horizontal: 16),
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           borderRadius: BorderRadius.circular(16),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.black.withOpacity(0.08),
+//               blurRadius: 10,
+//               offset: const Offset(0, 6),
+//             ),
+//           ],
+//         ),
+//         child: Row(
+//           children: [
+//             Image.asset(
+//               image,
+//               height: 60,
+//             ),
+//             const SizedBox(width: 16),
+//             Text(
+//               title,
+//               style: const TextStyle(
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.w600,
+//               ),
+//             ),
+//             const Spacer(),
+//             const Icon(Icons.arrow_forward_ios, size: 18),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+

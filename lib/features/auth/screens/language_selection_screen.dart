@@ -23,313 +23,292 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     {'code': 'pa', 'name': 'Punjabi', 'script': 'ਪੰਜਾਬੀ'},
   ];
 
-  void _showAddLanguageDialog() {
-    final nameController = TextEditingController();
-    final scriptController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text("Add Language"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: "Language Name (English)",
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: scriptController,
-                decoration: const InputDecoration(
-                  labelText: "Language Script",
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.brownPrimary,
-              ),
-              onPressed: () {
-                if (nameController.text.isEmpty ||
-                    scriptController.text.isEmpty) {
-                  return;
-                }
-
-                setState(() {
-                  final code =
-                  nameController.text.toLowerCase().substring(0, 2);
-
-                  _languages.add({
-                    'code': code,
-                    'name': nameController.text,
-                    'script': scriptController.text,
-                  });
-
-                  _selectedLanguage = code;
-                });
-
-                Navigator.pop(context);
-              },
-              child: const Text("Add"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => context.pop(),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Select a language to continue',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      body: Column(
+      backgroundColor: Colors.white,
+      body: Stack(
         children: [
-          /// ✅ SELECTED LANGUAGE SHOW
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.brownPrimary.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppColors.brownPrimary.withOpacity(0.3),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.language,
-                  color: AppColors.brownPrimary,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  "Selected: ",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                Text(
-                  "${_languages.firstWhere(
-                        (e) => e['code'] == _selectedLanguage,
-                  )['script']} "
-                      "(${_languages.firstWhere(
-                        (e) => e['code'] == _selectedLanguage,
-                  )['name']})",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.brownPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          /// 🌐 LANGUAGE GRID
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: GridView.builder(
-                itemCount: _languages.length + 1,
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.8,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemBuilder: (context, index) {
-                  /// ➕ ADD LANGUAGE
-                  if (index == _languages.length) {
-                    return GestureDetector(
-                      onTap: _showAddLanguageDialog,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                          ),
-                        ),
-                        child: const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_circle_outline,
-                                color: AppColors.brownPrimary,
-                                size: 32,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                "Add Language",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-
-                  /// 🌐 LANGUAGE CARD
-                  final lang = _languages[index];
-                  final isSelected =
-                      _selectedLanguage == lang['code'];
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedLanguage = lang['code']!;
-                      });
+          /// ================= MAIN CONTENT =================
+          Column(
+            children: [
+              /// 🔝 FIXED HEADER with Selected Language Container
+              Stack(
+                children: [
+                  /// BACKGROUND IMAGE WITH SHADER
+                  ShaderMask(
+                    shaderCallback: (Rect rect) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black,
+                          Colors.transparent,
+                        ],
+                        stops: [0.65, 1.0],
+                      ).createShader(rect);
                     },
+                    blendMode: BlendMode.dstIn,
+                    child: Image.asset(
+                      'assets/images/top-banner.png',
+                      height: 300,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+                  /// LOGO
+                  Positioned(
+                    top: -40,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        height: 260,
+                      ),
+                    ),
+                  ),
+
+                  /// TITLE & SUBTITLE
+                  Positioned(
+                    bottom: 90, // Adjust this to move text up/down
+                    left: 0,
+                    right: 0,
+                    child: Column(
+                      children: const [
+                        Text(
+                          'Select Your Language',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        // SizedBox(height: 6),
+                        Text(
+                          'Please choose your preferred language',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// SELECTED LANGUAGE CONTAINER (IMAGE KE UPAR)
+                  Positioned(
+                    bottom: 20, // Adjust this position
+                    left: 16,
+                    right: 16,
                     child: Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.brownPrimary.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isSelected
-                              ? AppColors.brownPrimary
-                              : Colors.grey.shade300,
-                          width: isSelected ? 1.5 : 1,
+                          color: AppColors.brownPrimary.withOpacity(0.3),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: Row(
                         children: [
-                          /// RADIO
-                          Container(
-                            width: 24,
-                            height: 24,
-                            margin: const EdgeInsets.only(right: 12),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isSelected
-                                    ? AppColors.brownPrimary
-                                    : Colors.grey.shade400,
-                                width: 2,
-                              ),
+                          const Icon(Icons.language,
+                              color: AppColors.brownPrimary),
+                          const SizedBox(width: 8),
+                          const Text(
+                            "Selected: ",
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
                             ),
-                            child: isSelected
-                                ? Center(
-                              child: Container(
-                                width: 12,
-                                height: 12,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.brownPrimary,
-                                ),
-                              ),
-                            )
-                                : null,
                           ),
+                          Text(
+                            "${_languages.firstWhere((e) => e['code'] == _selectedLanguage)['script']} "
+                            "(${_languages.firstWhere((e) => e['code'] == _selectedLanguage)['name']})",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.brownPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
-                          /// TEXT
-                          Expanded(
+              /// 🌐 LANGUAGE GRID (ONLY THIS SCROLLS)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.builder(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    itemCount: _languages.length + 1,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 2.0,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      /// ➕ ADD LANGUAGE CARD
+                      if (index == _languages.length) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                          child: const Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  lang['script']!,
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  color: AppColors.brownPrimary,
+                                  size: 32,
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 8),
                                 Text(
-                                  lang['name']!,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.textSecondary,
-                                    fontWeight: FontWeight.w500,
+                                  "Add Language",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                        );
+                      }
 
-                          if (isSelected)
-                            const Icon(
-                              Icons.check,
-                              color: AppColors.brownPrimary,
-                              size: 20,
+                      final lang = _languages[index];
+                      final isSelected = _selectedLanguage == lang['code'];
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedLanguage = lang['code']!;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.brownPrimary
+                                  : Colors.grey.shade300,
+                              width: isSelected ? 2 : 1,
                             ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                            color: isSelected
+                                ? AppColors.brownPrimary.withOpacity(0.05)
+                                : Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              /// ✅ TICK MARK FOR SELECTED LANGUAGE
+                              Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isSelected
+                                      ? AppColors.brownPrimary
+                                      : Colors.transparent,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? AppColors.brownPrimary
+                                        : Colors.grey.shade400,
+                                  ),
+                                ),
+                                child: isSelected
+                                    ? const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 16,
+                                      )
+                                    : null,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      lang['script']!,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      lang['name']!,
+                                      style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
+
+              /// 🚚 BOTTOM BANNER (TOP FADE)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 80),
+                child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black,
+                      ],
+                      stops: [0.0, 0.35],
+                    ).createShader(rect);
+                  },
+                  blendMode: BlendMode.dstIn,
+                  child: Image.asset(
+                    'assets/images/bottom-banner-2.png',
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ],
           ),
 
-          /// ✅ CONFIRM BUTTON
-          Padding(
-            padding: const EdgeInsets.all(16),
+          /// ✅ CONFIRM BUTTON (FIXED)
+          Positioned(
+            bottom: 20,
+            left: 16,
+            right: 16,
             child: SizedBox(
-              width: double.infinity,
-              height: 50,
+              height: 52,
               child: ElevatedButton(
                 onPressed: () {
-                  context.push('/role-selection');
+                  context.push('/login');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.brownPrimary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(28),
                   ),
                 ),
                 child: const Text(
-                  'Confirm',
+                  "Confirm",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

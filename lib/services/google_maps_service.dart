@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+
 class GoogleMapsService {
   static const String googleApiKey = 'AIzaSyBWRCvfFaZH_SOsaxyS5dtS--zsl9aMDLU';
   static const String _placesApiUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryde_partner/core/constants/color_constants.dart';
-
-import '../../../core/constants/size_constants.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,280 +11,217 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
-  Color _buttonColor = AppColors.primary;
-
-  bool _acceptTerms = false;
-
-  String? _userRole;
-  String _backgroundImage =
-      'https://images.unsplash.com/photo-1558981806-ec527fa84c39';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserRole();
-  }
-
-  Future<void> _loadUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    final role = prefs.getString('user_role');
-    final colorValue = prefs.getInt('user_color');
-
-    setState(() {
-      _userRole = role;
-
-      if (colorValue != null) {
-        _buttonColor = Color(colorValue);
-      }
-
-      if (role == 'food') {
-        _backgroundImage =
-        'https://images.unsplash.com/photo-1504674900247-0877df9cc836';
-      } else if (role == 'porter') {
-        _backgroundImage =
-        'https://images.unsplash.com/photo-1563738710386-99d1ce93e755?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDJ8fGJsdWUlMjBiaWtlfGVufDB8fDB8fHww';
-      } else {
-        _backgroundImage =
-        'https://images.unsplash.com/photo-1558981806-ec527fa84c39';
-      }
-    });
-  }
-
+  bool _agreeTerms = false;
 
   @override
   Widget build(BuildContext context) {
-    AppSizes.init(context);
-
     return Scaffold(
-      body: Stack(
-        children: [
-          /// 🔹 BACKGROUND IMAGE (NO BLUR)
-          Positioned.fill(
-            child: Image.network(
-              _backgroundImage,
-              fit: BoxFit.cover,
-            ),
-          ),
+      backgroundColor: Colors.white,
+      // Makes the screen scrollable when keyboard opens
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      /// ================= TOP BANNER =================
+                      Stack(
+                        children: [
+                          /// BACKGROUND IMAGE WITH SHADER
+                          ShaderMask(
+                            shaderCallback: (rect) {
+                              return const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Colors.black, Colors.transparent],
+                                stops: [0.65, 1.0],
+                              ).createShader(rect);
+                            },
+                            blendMode: BlendMode.dstIn,
+                            child: Image.asset(
+                              'assets/images/top-banner.png',
+                              height: 280,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
 
-          /// 🔹 LIGHT GRADIENT OVERLAY (NOT BLUR)
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.45),
-                    Colors.black.withOpacity(0.85),
-                  ],
+                          /// LOGO
+                          Positioned(
+                            top: -50,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Image.asset(
+                                'assets/images/logo.png',
+                                height: 250,
+                              ),
+                            ),
+                          ),
+
+                          /// TITLE & SUBTITLE
+                          Positioned(
+                            bottom: 40,
+                            left: 16,
+                            right: 16,
+                            child: Column(
+                              children: const [
+                                Text(
+                                  'Enter Your Phone Number',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Text(
+                                  'Please enter your mobile number to get started',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// ================= FORM =================
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            /// PHONE FIELD
+                            TextField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              maxLength: 10,
+                              decoration: InputDecoration(
+                                labelText: '+91 ----- -----',
+                                counterText: '',
+                                prefixIcon: const Icon(Icons.phone),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            /// TERMS & CONDITIONS CHECKBOX
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: _agreeTerms,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _agreeTerms = val ?? false;
+                                    });
+                                  },
+                                ),
+                                const Expanded(
+                                  child: Text(
+                                    'I agree to the Terms of Services and Privacy Policy ',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            /// LOGIN BUTTON
+                            SizedBox(
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  final phone = _phoneController.text.trim();
+                                  if (phone.isEmpty || !_agreeTerms) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          phone.isEmpty
+                                              ? 'Please enter phone number'
+                                              : 'Please agree to terms & services',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  final phoneNumber = _phoneController.text
+                                      .trim();
+                                  if (phoneNumber.isEmpty || !_agreeTerms) {
+                                    // Show error
+                                    return;
+                                  }
+
+                                  // Option 1: Path parameters ke saath
+                                  context.push('/verify-otp/$phoneNumber');
+
+                                  // Navigate to next screen
+                                  // context.push('/otp');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.brownPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(28),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Login",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      /// ================= BOTTOM BANNER =================
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: ShaderMask(
+                          shaderCallback: (rect) {
+                            return const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.transparent, Colors.black],
+                              stops: [0.0, 0.35],
+                            ).createShader(rect);
+                          },
+                          blendMode: BlendMode.dstIn,
+                          child: Image.asset(
+                            'assets/images/bottom-banner.png',
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-
-          /// 🔹 CONTENT
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSizes.hp,
-                vertical: AppSizes.vp,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// 🔹 TOP BAR
-                  InkWell(
-                    onTap: () => context.pop(),
-                    borderRadius: BorderRadius.circular(8),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          'Back',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const Spacer(),
-                        TextButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.headset_mic, color: Colors.white),
-                          label: const Text(
-                            'Help',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-                  SizedBox(height: AppSizes.spaceXL),
-
-                  /// 🔹 TITLE
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: AppSizes.avatarRadius,
-                        backgroundColor: Colors.white.withOpacity(0.15),
-                        child: const Icon(
-                          Icons.phone,
-                          color: Colors.white, // 👈 FIX
-                        ),
-                      ),
-
-                      const SizedBox(width: 12),
-                      Text(
-                        _userRole == 'food'
-                            ? 'Login as Food Partner'
-                            : _userRole == 'porter'
-                            ? 'Login as Porter Partner'
-                            : 'Login as Rider Partner',
-                        style: TextStyle(
-                          fontSize: AppSizes.title,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white, // 👈 FIX
-                        ),
-                      ),
-
-                    ],
-                  ),
-
-                  SizedBox(height: AppSizes.spaceL),
-
-                  /// 🔹 PHONE FIELD
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          '+91',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextField(
-                            controller: _phoneController,
-                            keyboardType: TextInputType.phone,
-                            maxLength: 10,
-                            style: const TextStyle(
-                              color: Colors.black, // 👈 typing visible
-                              fontSize: 16,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: 'Enter phone number',
-                              hintStyle: TextStyle(
-                                color: Colors.white60, // 👈 hint visible
-                              ),
-                              border: InputBorder.none,
-                              counterText: '',
-                            ),
-                          ),
-
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  /// 🔹 TERMS
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Checkbox(
-                        value: _acceptTerms,
-                        activeColor: _buttonColor,
-                        checkColor: Colors.white,
-                        side: const BorderSide(         // 👈 IMPORTANT
-                          color: Colors.white,          // ✔ border visible
-                          width: 2,
-                        ),
-                        onChanged: (v) =>
-                            setState(() => _acceptTerms = v ?? false),
-                      ),
-                      const Text(
-                        'I agree to the ',
-                        style: TextStyle(color: Colors.white), // 👈 FIX
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Text(
-                          'Terms & Conditions',
-                          style: TextStyle(
-                            color: Colors.lightBlueAccent, // 👈 better contrast
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-
-                  SizedBox(height: AppSizes.spaceS),
-
-                  /// 🔹 PROCEED BUTTON
-                  SizedBox(
-                    width: double.infinity,
-                    child:ElevatedButton(
-                      onPressed: _acceptTerms
-                          ? () {
-                        context.push(
-                          '/otp',
-                          extra: _phoneController.text,
-                        );
-                      }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _buttonColor, // 👈 dynamic color
-                        disabledBackgroundColor: _buttonColor.withOpacity(0.4),
-                        padding: EdgeInsets.symmetric(
-                          vertical: AppSizes.buttonPadding,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        'Proceed',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

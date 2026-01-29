@@ -1,9 +1,11 @@
-import 'package:audioplayers/audioplayers.dart';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tryde_partner/features/food/order_screen.dart';
 import 'package:tryde_partner/features/food/partner_profile_screen.dart';
 import 'package:tryde_partner/features/food/wallet_screen.dart';
+import 'package:tryde_partner/providers/location_provider.dart';
 import '../../core/constants/color_constants.dart';
-import 'oder_screen.dart';
 import 'order_req_screen.dart';
 
 double sw(BuildContext context) => MediaQuery.of(context).size.width;
@@ -31,9 +33,18 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
   final List<Widget> _screens = const [
     DashboardHome(),
     OrderListScreen(),
+    // StoreHomeScreen(),
     WalletScreen(),
     PartnerProfileScreen(),
   ];
+
+  @override
+void initState() {
+  super.initState();
+  Future.microtask(() {
+    context.read<LocationProvider>().fetchCurrentLocation();
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -45,72 +56,107 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
       body:_screens[_currentIndex],   // ❌ OFFLINE → Dashboard
 
       /// 🔒 Bottom Nav disabled when online
-      bottomNavigationBar: PartnerBottomNav(
-        currentIndex: _currentIndex,
-        onTap: (i) {
-          if (!_isOnline) {
-            setState(() => _currentIndex = i);
-          }
-        },
-      ),
+    bottomNavigationBar: PartnerBottomNav(
+  currentIndex: _currentIndex,
+  onTap: (i) {
+    setState(() => _currentIndex = i);
+  },
+),
     );
   }
 
   AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: AppColors.white,
-      elevation: 0,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
-            "Welcome 👋",
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
+  return AppBar(
+    backgroundColor: AppColors.white,
+    elevation: 0,
+    title: Consumer<LocationProvider>(
+      builder: (context, locationProvider, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Welcome 👋",
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
             ),
-          ),
-          Text(
-            "Delivery Partner",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+
+            const Text(
+              "Delivery Partner",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 4),
+
+            /// 📍 LOCATION
+            locationProvider.isLoading
+                ? const Text(
+                    "Fetching location...",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  )
+                : Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        size: 14,
+                        color: AppColors.foodPrimary,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          locationProvider.currentAddress.isNotEmpty
+                              ? locationProvider.currentAddress
+                              : "Location not available",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          ],
+        );
+      },
+    ),
+    actions: [
+      OnlineStatusToggle(
+        initialStatus: _isOnline,
+        onChanged: (value) {
+          setState(() {
+            _isOnline = value;
+            if (value) _currentIndex = 0;
+          });
+
+          if (value) {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => const OrderRequestBottomSheet(),
+            );
+          }
+        },
       ),
-      actions: [
-        /// 🔁 ONLINE / OFFLINE TOGGLE
-        OnlineStatusToggle(
-          initialStatus: _isOnline,
-          onChanged: (value) {
-            setState(() {
-              _isOnline = value;
-              if (value) {
-                _currentIndex = 0;
-              }
-            });
 
-            // ✅ ONLINE hone par bottom sheet open
-            if (value) {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => const OrderRequestBottomSheet(),
-              );
-            }
-          },
-        ),
+      IconButton(
+        icon: const Icon(Icons.notifications_none),
+        onPressed: () {},
+      ),
 
+    ],
+  );
+}
 
-        IconButton(
-          icon: const Icon(Icons.notifications_none),
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
 }
 
 /// ===================== HOME =====================
