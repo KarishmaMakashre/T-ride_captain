@@ -15,47 +15,76 @@ class DriverCollectPaymentScreen extends StatelessWidget {
   });
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Collect Payment")),
-      backgroundColor: const Color(0xFFF5F7FA),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _amountCard(),
-            const SizedBox(height: 20),
-            _qrCard(),
-            const SizedBox(height: 20),
+      appBar: AppBar(
+        title: const Text("Collect Payment"),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
 
-            /// 💵 COLLECT CASH
-            OutlinedButton(
-              onPressed: () => _showCashConfirm(context),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.green, width: 1.5),
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                "Collect Cash",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                ),
+      body: Stack(
+        children: [
+          /// 🖼️ BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/topHeaderImage.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          /// 🔲 OPTIONAL OVERLAY
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.08),
+            ),
+          ),
+
+          /// 🧱 MAIN CONTENT
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  _amountCard(),
+                  const SizedBox(height: 20),
+                  _qrCard(),
+                  const SizedBox(height: 20),
+
+                  /// 💵 COLLECT CASH
+                  OutlinedButton(
+                    onPressed: () => _showCashConfirm(context),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.green, width: 1.5),
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                    child: const Text(
+                      "Collect Cash",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  const Text(
+                    "Please collect payment before ending the ride",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
             ),
-
-            const Spacer(),
-
-            const Text(
-              "Please collect payment before ending the ride",
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

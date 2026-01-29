@@ -18,7 +18,7 @@ class CustomHomeAppBar extends StatelessWidget
     return SafeArea(
       child: Container(
         height: 70,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: const BoxDecoration(color: Colors.white),
         child: Row(
           children: [

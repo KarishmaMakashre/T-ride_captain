@@ -13,72 +13,113 @@ class DriverTripCompletedScreen extends StatelessWidget {
     final double total = baseFare + distanceFare + timeFare;
     final h = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text("Trip Completed")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+    {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Trip Completed"),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        extendBodyBehindAppBar: true,
+
+        body: Stack(
           children: [
-            const Icon(Icons.check_circle, size: 80, color: Colors.green),
-            const SizedBox(height: 10),
-            const Text(
-              "Trip Successfully Completed",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            /// 🖼️ BACKGROUND IMAGE
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/topHeaderImage.png',
+                fit: BoxFit.cover,
+              ),
             ),
 
-            const SizedBox(height: 30),
+            /// 🔲 OVERLAY (optional but recommended)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.10),
+              ),
+            ),
 
-            _fareRow("Base Fare", baseFare),
-            _fareRow("Distance Fare", distanceFare),
-            _fareRow("Time Fare", timeFare),
-            const Divider(),
-            _fareRow("TOTAL", total, bold: true),
+            /// 🧱 CONTENT
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      size: 80,
+                      color: Colors.green,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Trip Successfully Completed",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
 
-            const SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
-            _paymentStatusCard(),
+                    _fareRow("Base Fare", baseFare),
+                    _fareRow("Distance Fare", distanceFare),
+                    _fareRow("Time Fare", timeFare),
+                    const Divider(color: Colors.white54),
+                    _fareRow("TOTAL", total, bold: true),
 
-            const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Offers & Rewards",
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
+                    const SizedBox(height: 30),
+
+                    _paymentStatusCard(),
+
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        "Offers & Rewards",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    /// 📢 ADS BANNER
+                    ImageAdsBanner(
+                      height: h * 0.18,
+                      adsImages: const [
+                        "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RatePassengerScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text("Rate User"),
+                    ),
+                  ],
                 ),
               ),
             ),
-
-            SizedBox(height: 10,),
-            /// 📢 ADS BANNER (ADDED)
-            ImageAdsBanner(
-              height: h * 0.18,
-              adsImages: const [
-                "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-              ],
-            ),
-
-            const Spacer(),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const RatePassengerScreen(),
-                  ),
-                );
-              },
-              child: const Text("Rate User"),
-            ),
           ],
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget _fareRow(String label, double value, {bool bold = false}) {

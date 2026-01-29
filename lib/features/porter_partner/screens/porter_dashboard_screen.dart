@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tryde_partner/core/constants/app_constants.dart';
 import 'package:tryde_partner/core/constants/color_constants.dart';
@@ -54,6 +55,14 @@ class _PartnerDashboardState extends State<PartnerDashboard>
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // 👈 status bar background
+        statusBarIconBrightness: Brightness.dark, // Android icons
+        statusBarBrightness: Brightness.dark, // iOS icons
+      ),
+    );
+
     return ChangeNotifierProvider(
       create: (_) => LocationProvider(),
       child: Consumer<LocationProvider>(
@@ -71,35 +80,56 @@ class _PartnerDashboardState extends State<PartnerDashboard>
               onDutyChanged: (value) {
                 setState(() {
                   isOnline = value;
-                  var hasRideRequest = value;
                 });
               },
             ),
 
+            drawer: _drawer(locationProvider),
 
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _topStats(),
-                  const SizedBox(height: 16),
-                  _porterSharingEarnings(),
-                  const SizedBox(height: 16),
-                  _upcomingOrders(),
-                  const SizedBox(height: 16),
-                  _withdrawButton(),
-                  const SizedBox(height: 24),
-                  _tabBar(),
-                  const SizedBox(height: 20),
-                  _animatedBarChart(),
-                  const SizedBox(height: 16),
-                  _monthlyText(),
-                  const SizedBox(height: 16),
-                  _breakdownCard(),
-                ],
-              ),
+            body: Stack(
+              children: [
+                /// 🖼️ BACKGROUND IMAGE
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/topHeaderImage.png', // 👈 your bg image
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                /// 🔲 DARK OVERLAY (optional but recommended)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.black.withOpacity(0.08),
+                  ),
+                ),
+
+                /// 📦 MAIN CONTENT
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _topStats(),
+                      const SizedBox(height: 16),
+                      _porterSharingEarnings(),
+                      const SizedBox(height: 16),
+                      _upcomingOrders(),
+                      const SizedBox(height: 16),
+                      _withdrawButton(),
+                      const SizedBox(height: 24),
+                      _tabBar(),
+                      const SizedBox(height: 20),
+                      _animatedBarChart(),
+                      const SizedBox(height: 16),
+                      _monthlyText(),
+                      const SizedBox(height: 16),
+                      _breakdownCard(),
+                    ],
+                  ),
+                ),
+              ],
             ),
           );
+
         },
       ),
     );

@@ -339,7 +339,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -349,31 +348,53 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _goodsImages(),
-            const SizedBox(height: 20),
-            _goodsInfo(),
-            const SizedBox(height: 16),
-            _description(),
-            const SizedBox(height: 20),
-            _locationCard(),
-            const SizedBox(height: 20),
-            _ownerDetails(),
-            const SizedBox(height: 20),
-            _pickupTime(),
-            const SizedBox(height: 20),
-            _videoSection(),
-            const SizedBox(height: 30),
-            _acceptRejectButtons(context),
-          ],
-        ),
+
+      body: Stack(
+        children: [
+          /// 🖼️ BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/topHeaderImage.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          /// 🔲 DARK OVERLAY (for text readability)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.10),
+            ),
+          ),
+
+          /// 📦 MAIN CONTENT
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _goodsImages(),
+                const SizedBox(height: 20),
+                _goodsInfo(),
+                const SizedBox(height: 16),
+                _description(),
+                const SizedBox(height: 20),
+                _locationCard(),
+                const SizedBox(height: 20),
+                _ownerDetails(),
+                const SizedBox(height: 20),
+                _pickupTime(),
+                const SizedBox(height: 20),
+                _videoSection(),
+                const SizedBox(height: 30),
+                _acceptRejectButtons(context),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
+
 
   // 🔹 GOODS IMAGES (Unchanged from previous)
   Widget _goodsImages() {

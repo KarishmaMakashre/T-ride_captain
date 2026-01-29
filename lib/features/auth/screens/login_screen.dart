@@ -17,7 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // Makes the screen scrollable when keyboard opens
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -29,10 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+
                       /// ================= TOP BANNER =================
                       Stack(
                         children: [
-                          /// BACKGROUND IMAGE WITH SHADER
                           ShaderMask(
                             shaderCallback: (rect) {
                               return const LinearGradient(
@@ -64,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
 
-                          /// TITLE & SUBTITLE
+                          /// TITLE
                           Positioned(
                             bottom: 40,
                             left: 16,
@@ -103,28 +102,57 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            /// PHONE FIELD
+
+                            /// 📱 PHONE FIELD (FULLY CUSTOMIZED COLORS)
                             TextField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
                               maxLength: 10,
+                              cursorColor: AppColors.brownPrimary,
                               decoration: InputDecoration(
                                 labelText: '+91 ----- -----',
                                 counterText: '',
-                                prefixIcon: const Icon(Icons.phone),
-                                border: OutlineInputBorder(
+                                prefixIcon: Icon(
+                                  Icons.phone,
+                                  color: AppColors.brownPrimary,
+                                ),
+
+                                labelStyle: TextStyle(
+                                  color: AppColors.brownPrimary,
+                                ),
+
+                                enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                  ),
+                                ),
+
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: AppColors.brownPrimary,
+                                    width: 2,
+                                  ),
+                                ),
+
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                               ),
                             ),
 
                             const SizedBox(height: 16),
 
-                            /// TERMS & CONDITIONS CHECKBOX
+                            /// TERMS & CONDITIONS
                             Row(
                               children: [
                                 Checkbox(
                                   value: _agreeTerms,
+                                  activeColor: AppColors.brownPrimary,
                                   onChanged: (val) {
                                     setState(() {
                                       _agreeTerms = val ?? false;
@@ -133,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const Expanded(
                                   child: Text(
-                                    'I agree to the Terms of Services and Privacy Policy ',
+                                    'I agree to the Terms of Services and Privacy Policy',
                                     style: TextStyle(fontSize: 14),
                                   ),
                                 ),
@@ -146,8 +174,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             SizedBox(
                               height: 50,
                               child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.brownPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(28),
+                                  ),
+                                ),
                                 onPressed: () {
                                   final phone = _phoneController.text.trim();
+
                                   if (phone.isEmpty || !_agreeTerms) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -161,25 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     return;
                                   }
 
-                                  final phoneNumber = _phoneController.text
-                                      .trim();
-                                  if (phoneNumber.isEmpty || !_agreeTerms) {
-                                    // Show error
-                                    return;
-                                  }
-
-                                  // Option 1: Path parameters ke saath
-                                  context.push('/verify-otp/$phoneNumber');
-
-                                  // Navigate to next screen
-                                  // context.push('/otp');
+                                  context.push('/verify-otp/$phone');
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.brownPrimary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(28),
-                                  ),
-                                ),
                                 child: const Text(
                                   "Login",
                                   style: TextStyle(

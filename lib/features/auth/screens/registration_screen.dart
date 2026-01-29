@@ -48,8 +48,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   List<String> get _steps {
+    if (_userRole == 'food') {
+      return ['Personal', 'Address', 'Aadhar/PAN', 'Documents'];
+    }
     return ['Personal', 'Address', 'Aadhar/PAN', 'Vehicle', 'Documents'];
   }
+
 
   String? _userRole;
 
@@ -98,15 +102,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String _getVehicleImage(String vehicle) {
     switch (vehicle) {
       case 'Motorcycle':
-        return 'assets/images/vehicles/pickup_man.jpg';
+        return 'assets/images/vehicles/pickup_man-removebg-preview.png';
       case 'Car':
         return 'assets/images/vehicles/car.png';
       case 'Auto Rickshaw':
-        return 'assets/images/vehicles/rikshaw.png';
+        return 'assets/images/vehicles/rikshaw-removebg-preview.png';
       case 'E-Rickshaw':
-        return 'assets/images/vehicles/e-rikshaw.png';
+        return 'assets/images/vehicles/e-rikshaw-removebg-preview.png';
       case 'Mini Bus':
-        return 'assets/images/vehicles/mini_bus.jpg';
+        return 'assets/images/vehicles/mini_bus-removebg-preview.png';
       case 'Mini Truck':
         return 'assets/images/vehicles/pickup_truck.jpg';
       case 'Truck':
@@ -138,116 +142,101 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          _buildProgressBar(),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  _getStepTitle(),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: _primaryColor),
+                    onPressed: () => context.pop(),
                   ),
-                ),
-                Text('Step ${_currentStep + 1}/${_steps.length}'),
-              ],
+                  const SizedBox(width: 8),
+                  Text(
+                    'Registration',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              onPageChanged: (index) {
-                setState(() => _currentStep = index);
-              },
-              children: _userRole == 'food'
-                  ? [
-                      _buildPersonalInfoStep(),
-                      _buildAddressStep(),
-                      _buildAadharPanStep(),
-                      _buildVehicleStep(),
-                      _buildDocumentsStep(), // 🚫 Vehicle skipped
-                    ]
-                  : [
-                      _buildPersonalInfoStep(),
-                      _buildAddressStep(),
-                      _buildAadharPanStep(),
-                      _buildVehicleStep(),
-                      _buildDocumentsStep(),
-                    ],
+            // 🔹 Background Top
+            Positioned.fill(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                'assets/images/topHeaderImage.png',
+                height: 180,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
 
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                if (_currentStep > 0)
+            // 🔹 Background Bottom
+
+            // 🔹 MAIN CONTENT
+            SafeArea(
+              child: Column(
+                children: [
+                  _buildProgressBar(),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _getStepTitle(),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text('Step ${_currentStep + 1}/${_steps.length}'),
+                      ],
+                    ),
+                  ),
+
+                  // ✅ Expanded NOW VALID
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: _goToPreviousStep,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: _primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Back',
-                        style: TextStyle(
-                          color: _primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: (index) {
+                        setState(() => _currentStep = index);
+                      },
+                      children: _userRole == 'food'
+                          ? [
+                        _buildPersonalInfoStep(),
+                        _buildAddressStep(),
+                        _buildAadharPanStep(),
+                        _buildDocumentsStep(),
+                      ]
+                          : [
+                        _buildPersonalInfoStep(),
+                        _buildAddressStep(),
+                        _buildAadharPanStep(),
+                        _buildVehicleStep(),
+                        _buildDocumentsStep(),
+                      ],
                     ),
                   ),
 
-                if (_currentStep > 0) const SizedBox(width: 12),
-
-                Expanded(
-                  child: ElevatedButton(
-                    // 🔥 TERMS CONDITION APPLY ONLY ON LAST STEP
-                    onPressed:
-                        (_currentStep == _steps.length - 1 && !_acceptTerms)
-                        ? null
-                        : _goToNextStep,
-
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          (_currentStep == _steps.length - 1 && !_acceptTerms)
-                          ? _primaryColor.withOpacity(0.5)
-                          : _primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      // 🔥 ROLE SAFE SUBMIT TEXT
-                      _currentStep == _steps.length - 1 ? 'Submit' : 'Next',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _buildBottomButtons(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
   }
 
   // ================= HELPERS =================
@@ -990,4 +979,62 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
+
+  Widget _buildBottomButtons() {
+    return Row(
+      children: [
+        if (_currentStep > 0)
+          Expanded(
+            child: OutlinedButton(
+              onPressed: _goToPreviousStep,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                side: BorderSide(color: _primaryColor),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Back',
+                style: TextStyle(
+                  color: _primaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+
+        if (_currentStep > 0) const SizedBox(width: 12),
+
+        Expanded(
+          child: ElevatedButton(
+            onPressed:
+            (_currentStep == _steps.length - 1 && !_acceptTerms)
+                ? null
+                : _goToNextStep,
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+              (_currentStep == _steps.length - 1 && !_acceptTerms)
+                  ? _primaryColor.withOpacity(0.5)
+                  : _primaryColor,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text(
+              _currentStep == _steps.length - 1 ? 'Submit' : 'Next',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+

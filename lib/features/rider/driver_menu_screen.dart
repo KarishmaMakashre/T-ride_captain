@@ -6,7 +6,8 @@ class DriverMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7F9),
+      backgroundColor: Colors.transparent,
+
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -20,154 +21,170 @@ class DriverMenuScreen extends StatelessWidget {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: Column(
+
+      /// 🔥 BODY WITH BG IMAGE
+      body: Stack(
         children: [
-
-          /// 👤 PROFILE HEADER
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-
-                /// Profile Image
-                const CircleAvatar(
-                  radius: 28,
-                  backgroundImage: NetworkImage(
-                    "https://randomuser.me/api/portraits/men/32.jpg",
-                  ),
-                ),
-
-                const SizedBox(width: 14),
-
-                /// Name + Role
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Rahul Sharma",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        "Driver Partner",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                /// 📞 Call Button
-                _actionIcon(
-                  icon: Icons.call,
-                  color: Colors.green,
-                  onTap: () {
-                    // TODO: Call action
-                  },
-                ),
-
-                const SizedBox(width: 8),
-
-                /// 💬 Message Button
-                _actionIcon(
-                  icon: Icons.message,
-                  color: Colors.blue,
-                  onTap: () {
-                    // TODO: Message action
-                  },
-                ),
-              ],
+          /// 🖼️ BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/topHeaderImage.png', // 👈 your bg image
+              fit: BoxFit.cover,
             ),
           ),
 
-          /// 🔹 MENU LIST
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _menuTile(
-                  icon: Icons.person,
-                  title: "My Profile",
-                  subtitle: "View & edit profile details",
-                  onTap: () {},
-                ),
-                _menuTile(
-                  icon: Icons.account_balance_wallet,
-                  title: "Wallet & Earnings",
-                  subtitle: "View balance & payouts",
-                  onTap: () {},
-                ),
-                _menuTile(
-                  icon: Icons.history,
-                  title: "Trip History",
-                  subtitle: "Your completed rides",
-                  onTap: () {},
-                ),
-                _menuTile(
-                  icon: Icons.settings,
-                  title: "Settings",
-                  subtitle: "App preferences & account",
-                  onTap: () {},
-                ),
-                _menuTile(
-                  icon: Icons.help_outline,
-                  title: "Help & Support",
-                  subtitle: "Get help or contact support",
-                  onTap: () {},
-                ),
-              ],
+          /// 🔲 DARK OVERLAY (optional but recommended)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.08),
             ),
           ),
 
-          /// 🔴 LOGOUT
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade600,
-                elevation: 2,
-                minimumSize: const Size(double.infinity, 52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+          /// 🚀 MAIN CONTENT
+          Column(
+            children: [
+              /// 👤 PROFILE HEADER
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    /// Profile Image
+                    const CircleAvatar(
+                      radius: 28,
+                      backgroundImage: NetworkImage(
+                        "https://randomuser.me/api/portraits/men/32.jpg",
+                      ),
+                    ),
+
+                    const SizedBox(width: 14),
+
+                    /// Name + Role
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Rahul Sharma",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Driver Partner",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// 📞 Call
+                    _actionIcon(
+                      icon: Icons.call,
+                      color: Colors.green,
+                      onTap: () {},
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    /// 💬 Message
+                    _actionIcon(
+                      icon: Icons.message,
+                      color: Colors.blue,
+                      onTap: () {},
+                    ),
+                  ],
                 ),
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Logout",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+
+              /// 🔹 MENU LIST
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    _menuTile(
+                      icon: Icons.person,
+                      title: "My Profile",
+                      subtitle: "View & edit profile details",
+                      onTap: () {},
+                    ),
+                    _menuTile(
+                      icon: Icons.account_balance_wallet,
+                      title: "Wallet & Earnings",
+                      subtitle: "View balance & payouts",
+                      onTap: () {},
+                    ),
+                    _menuTile(
+                      icon: Icons.history,
+                      title: "Trip History",
+                      subtitle: "Your completed rides",
+                      onTap: () {},
+                    ),
+                    _menuTile(
+                      icon: Icons.settings,
+                      title: "Settings",
+                      subtitle: "App preferences & account",
+                      onTap: () {},
+                    ),
+                    _menuTile(
+                      icon: Icons.help_outline,
+                      title: "Help & Support",
+                      subtitle: "Get help or contact support",
+                      onTap: () {},
+                    ),
+                  ],
                 ),
               ),
-            ),
+
+              /// 🔴 LOGOUT
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red.shade600,
+                    elevation: 2,
+                    minimumSize: const Size(double.infinity, 52),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  /// 🔘 ACTION ICON (CALL / MSG)
-  Widget _actionIcon({
+  /// 🔘 ACTION ICON
+  static Widget _actionIcon({
     required IconData icon,
     required Color color,
     required VoidCallback onTap,
@@ -186,8 +203,8 @@ class DriverMenuScreen extends StatelessWidget {
     );
   }
 
-  /// ================= MENU TILE =================
-  Widget _menuTile({
+  /// 🔹 MENU TILE
+  static Widget _menuTile({
     required IconData icon,
     required String title,
     required String subtitle,

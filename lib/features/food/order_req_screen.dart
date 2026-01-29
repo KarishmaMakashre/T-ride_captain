@@ -13,11 +13,30 @@ class OrderListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgColor,
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: 3,
-        itemBuilder: (_, __) => const OrderCard(),
+      body: Stack(
+        children: [
+          /// 🔥 BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              "assets/images/topHeaderImage.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          /// 🔥 OVERLAY (optional but recommended)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.08),
+            ),
+          ),
+
+          /// 🔥 ORDER LIST
+          ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: 3,
+            itemBuilder: (_, __) => const OrderCard(),
+          ),
+        ],
       ),
     );
   }
@@ -28,46 +47,73 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: const CircleAvatar(
-          radius: 26,
-          backgroundColor: primaryColor,
-          child: Icon(Icons.fastfood, color: Colors.white),
-        ),
-        title: const Text(
-          "Domino's Pizza",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: const Text("Pickup 2.5 km • Drop 5 km"),
-        trailing: const Text(
-          "₹120",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Container(
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            clipBehavior: Clip.antiAlias, // 🔥 important for bg image
+            child: Stack(
+              children: [
+                /// 🔥 BACKGROUND IMAGE
+                Positioned.fill(
+                  child: Image.asset(
+                    "assets/images/topHeaderImage.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+        
+                /// 🔥 DARK OVERLAY (for readability)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.white,
+                  ),
+                ),
+        
+                /// 🔥 CONTENT
+                ListTile(
+                  contentPadding: const EdgeInsets.all(16),
+                  leading: const CircleAvatar(
+                    radius: 26,
+                    backgroundColor: primaryColor,
+                    child: Icon(Icons.fastfood, color: Colors.black45),
+                  ),
+                  title: const Text(
+                    "Domino's Pizza",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    "Pickup 2.5 km • Drop 5 km",
+                    style: TextStyle(color: Colors.black45),
+                  ),
+                  trailing: const Text(
+                    "₹120",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.greenAccent,
+                    ),
+                  ),
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.black45,
+                      builder: (_) => const OrderRequestBottomSheet(),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => const OrderRequestBottomSheet(),
-          );
-
-    //       Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => const PartnerLiveOrderScreen(),
-    //   ),
-    // );
-        },
-
-
       ),
     );
   }
@@ -79,106 +125,147 @@ class OrderRequestBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                "Order Request 🚀",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Chip(
-                label: Text("NEW"),
-                backgroundColor: Color(0xFFE8F5E9),
-                labelStyle: TextStyle(color: Colors.green),
-              ),
-            ],
+          /// 🔥 BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              "assets/images/topHeaderImage.png",
+              fit: BoxFit.cover,
+            ),
           ),
-          const SizedBox(height: 16),
-          const OrderDetailTile(
-            icon: Icons.restaurant,
-            title: "Restaurant",
-            value: "Domino's Pizza",
-          ),
-          const OrderDetailTile(
-            icon: Icons.store,
-            title: "Pickup",
-            value: "MG Road, Indore",
-          ),
-          const OrderDetailTile(
-            icon: Icons.location_on,
-            title: "Drop",
-            value: "Vijay Nagar",
-          ),
-          const OrderDetailTile(
-            icon: Icons.route,
-            title: "Distance",
-            value: "5 km",
-          ),
-          const OrderDetailTile(
-            icon: Icons.currency_rupee,
-            title: "Earnings",
-            value: "₹120",
-            highlight: true,
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: const Text("Reject"),
+
+          /// 🔥 GRADIENT OVERLAY (better readability)
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black54,
+                    Colors.black38,
+                    Colors.black26,
+                  ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const DeliveryFlowScreen(),
+            ),
+          ),
+
+          /// 🔥 CONTENT CARD
+          SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.only(top: 80),
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        "Order Request 🚀",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                      Chip(
+                        label: Text("NEW"),
+                        backgroundColor: Color(0xFFE8F5E9),
+                        labelStyle: TextStyle(color: Colors.green),
+                      ),
+                    ],
                   ),
-                  child: const Text(
-                    "Accept Order",
-                    style: TextStyle(color: Colors.white),
+
+                  const SizedBox(height: 16),
+
+                  const OrderDetailTile(
+                    icon: Icons.restaurant,
+                    title: "Restaurant",
+                    value: "Domino's Pizza",
                   ),
-                ),
+                  const OrderDetailTile(
+                    icon: Icons.store,
+                    title: "Pickup",
+                    value: "MG Road, Indore",
+                  ),
+                  const OrderDetailTile(
+                    icon: Icons.location_on,
+                    title: "Drop",
+                    value: "Vijay Nagar",
+                  ),
+                  const OrderDetailTile(
+                    icon: Icons.route,
+                    title: "Distance",
+                    value: "5 km",
+                  ),
+                  const OrderDetailTile(
+                    icon: Icons.currency_rupee,
+                    title: "Earnings",
+                    value: "₹120",
+                    highlight: true,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: const Text("Reject"),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const DeliveryFlowScreen(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: const Text(
+                            "Accept Order",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
 
 /// ================= ORDER DETAIL TILE =================
 class OrderDetailTile extends StatelessWidget {
@@ -201,40 +288,74 @@ class OrderDetailTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: highlight ? const Color(0xFFFFF3E0) : const Color(0xFFF9FAFC),
+        color: highlight
+            ? const Color(0xFFFFF3E0)
+            : Colors.white.withOpacity(0.95),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
+          /// ICON
           CircleAvatar(
-            backgroundColor: highlight ? Colors.orange : Colors.grey.shade200,
-            child: Icon(icon, color: highlight ? Colors.white : Colors.black),
+            radius: 22,
+            backgroundColor:
+            highlight ? Colors.orange : Colors.grey.shade200,
+            child: Icon(
+              icon,
+              size: 20,
+              color: highlight ? Colors.white : Colors.black87,
+            ),
           ),
+
           const SizedBox(width: 12),
+
+          /// TEXT
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
                   style: TextStyle(
                     fontSize: 15,
-                    fontWeight: highlight ? FontWeight.bold : FontWeight.w500,
+                    fontWeight:
+                    highlight ? FontWeight.bold : FontWeight.w600,
+                    color: Colors.black87,
                   ),
                 ),
               ],
             ),
           ),
+
+          /// OPTIONAL HIGHLIGHT ICON
+          if (highlight)
+            const Icon(
+              Icons.trending_up,
+              color: Colors.orange,
+              size: 20,
+            ),
         ],
       ),
     );
   }
 }
+
 
 /// ================= NAVIGATION SCREEN =================
 class NavigateToRestaurantScreen extends StatelessWidget {
@@ -243,27 +364,92 @@ class NavigateToRestaurantScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Navigate to Restaurant"),
-        backgroundColor: Colors.white,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.navigation, size: 80, color: Colors.orange),
-            SizedBox(height: 16),
-            Text(
-              "Navigation Started 🚗",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          /// 🔥 BACKGROUND IMAGE
+          // Positioned.fill(
+          //   child: Image.asset(
+          //     "assets/images/topHeaderImage.png", // or network image
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+
+          /// 🔥 DARK OVERLAY
+          // Positioned.fill(
+          //   child: Container(
+          //     color: Colors.black.withOpacity(0.45),
+          //   ),
+          // ),
+
+          /// 🔥 CONTENT
+          SafeArea(
+            child: Column(
+              children: [
+                /// APP BAR
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const Text(
+                        "Navigate to Restaurant",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Spacer(),
+
+                /// CENTER CARD
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.95),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(
+                        Icons.navigation,
+                        size: 80,
+                        color: Colors.orange,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        "Navigation Started 🚗",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Proceed to restaurant pickup location",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Spacer(flex: 2),
+              ],
             ),
-            SizedBox(height: 8),
-            Text(
-              "Proceed to restaurant pickup location",
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -280,6 +466,8 @@ enum DeliveryStep {
   deliveryOtp,
 }
 
+
+/// ---------------- DELIVERY FLOW SCREEN ----------------
 class DeliveryFlowScreen extends StatefulWidget {
   const DeliveryFlowScreen({super.key});
 
@@ -291,11 +479,8 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
   DeliveryStep currentStep = DeliveryStep.navigateToRestaurant;
   final TextEditingController otpController = TextEditingController();
 
-  // Modern Theme Colors
-  final Color primaryColor = const Color(0xFF6366F1); // Indigo
-  final Color backgroundColor = const Color(0xFFF8FAFC);
+  final Color primaryColor = const Color(0xFF6366F1);
 
-  // Update the _nextStep function
   void _nextStep() {
     if (currentStep == DeliveryStep.deliveryOtp) {
       _handleOtpVerification();
@@ -303,116 +488,68 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
     }
 
     setState(() {
-      if (currentStep.index < DeliveryStep.values.length - 1) {
-        currentStep = DeliveryStep.values[currentStep.index + 1];
-      }
+      currentStep =
+      DeliveryStep.values[(currentStep.index + 1).clamp(0, 5)];
     });
   }
 
-  // New function to handle OTP and Navigation
   void _handleOtpVerification() {
     if (otpController.text.length == 4) {
-      // Success Haptic/Feedback could be added here
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-          const DeliveryCompletedFlowScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: animation.drive(
-                  Tween(
-                    begin: const Offset(0, 0.1),
-                    end: Offset.zero,
-                  ).chain(CurveTween(curve: Curves.easeOutQuart)),
-                ),
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 600),
+        MaterialPageRoute(
+          builder: (_) => const DeliveryCompletedFlowScreen(),
         ),
       );
     } else {
-      // Basic validation feedback
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("Please enter a valid 4-digit OTP"),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
+        const SnackBar(content: Text("Enter valid 4-digit OTP")),
       );
     }
-  }
-
-  // Ensure the button text updates correctly in _buildBottomAction
-  Widget _buildBottomAction() {
-    return Container(
-      padding: const EdgeInsets.all(25),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: ElevatedButton(
-          onPressed: _nextStep,
-          style: ElevatedButton.styleFrom(
-            backgroundColor:
-            currentStep == DeliveryStep.deliveryOtp
-                ? AppColors.foodPrimaryDark   // final step color
-                : AppColors.foodPrimary,      // normal step color
-            minimumSize: const Size(double.infinity, 60),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0,
-          ),
-          child: Text(
-            currentStep == DeliveryStep.deliveryOtp
-                ? "VERIFY & COMPLETE"
-                : "CONTINUE",
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.1,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
-      body: Column(
+      body: Stack(
         children: [
-          _buildHeader(context),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                child: _stepContent(currentStep),
+          /// 🔥 BACKGROUND IMAGE
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  "assets/images/topHeaderImage.png",
+                ),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          _buildBottomAction(),
+
+          /// 🔥 DARK OVERLAY
+          Container(color: Colors.black.withOpacity(0.45)),
+
+          /// 🔥 MAIN CONTENT
+          Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: _stepContent(currentStep),
+                  ),
+                ),
+              ),
+              _buildBottomAction(),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  /// ---------------- MODERN HEADER ----------------
+  /// ---------------- HEADER ----------------
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
@@ -421,291 +558,95 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
         right: 20,
         bottom: 30,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: const [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "ACTIVE DELIVERY",
-                    style: TextStyle(
-                      letterSpacing: 1.2,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Text(
-                    "Order #FD-2847",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF1E293B),
-                    ),
-                  ),
-                ],
+              Text(
+                "ACTIVE DELIVERY",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  "ON TIME",
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+              Text(
+                "Order #FD-2847",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
             ],
+          ),
+          Chip(
+            label: Text("ON TIME"),
+            backgroundColor: Color(0xFFE8F5E9),
+            labelStyle: TextStyle(color: Colors.green),
           ),
         ],
       ),
     );
   }
 
-  /// ---------------- CONTENT LOGIC ----------------
+  /// ---------------- BOTTOM BUTTON ----------------
+  Widget _buildBottomAction() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      child: ElevatedButton(
+        onPressed: _nextStep,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          minimumSize: const Size(double.infinity, 55),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+        child: Text(
+          currentStep == DeliveryStep.deliveryOtp
+              ? "VERIFY & COMPLETE"
+              : "CONTINUE",
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// ---------------- STEP CONTENT ----------------
   Widget _stepContent(DeliveryStep step) {
     switch (step) {
       case DeliveryStep.navigateToRestaurant:
-        return _buildLocationCard(
-          title: "Pickup Point",
-          name: "Burger King - MG Road",
-          address: "Sector 4, Near Metro Station",
-          distance: "1.2 km",
-          eta: "5 mins",
-          icon: Icons.restaurant,
-        );
+        return _infoCard("Navigate to Restaurant", Icons.restaurant);
       case DeliveryStep.reachedRestaurant:
-        return _buildInfoCard(
-          "Waiting for Kitchen",
-          "Order is being prepared. Please wait at the designated pickup counter.",
-          Icons.hourglass_bottom_rounded,
-          AppColors.ridePrimaryLight,
-        );
+        return _infoCard("Reached Restaurant", Icons.store);
       case DeliveryStep.pickupConfirmed:
-        return _buildChecklistCard();
+        return _infoCard("Pickup Confirmed", Icons.check_circle);
       case DeliveryStep.outForDelivery:
-        return _buildCustomerCard();
+        return _infoCard("Out for Delivery", Icons.delivery_dining);
       case DeliveryStep.reachedCustomer:
-        return _buildLocationCard(
-          title: "Delivery Point",
-          name: "Alex Johnson",
-          address: "Apt 4B, Sunset Boulevard",
-          distance: "0.2 km",
-          eta: "Now",
-          icon: Icons.person_pin_circle,
-        );
+        return _infoCard("Reached Customer", Icons.location_on);
       case DeliveryStep.deliveryOtp:
-        return _buildOtpEntry();
+        return _otpCard();
     }
   }
 
-  /// ---------------- STYLISH COMPONENTS ----------------
-
-  Widget _buildLocationCard({
-    required String title,
-    required String name,
-    required String address,
-    required String distance,
-    required String eta,
-    required IconData icon,
-  }) {
-    return Column(
-      children: [
-        Container(
-          height: 300,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(24),
-            image: const DecorationImage(
-              image: NetworkImage('https://staticmapmaker.com/img/google-placeholder.png'),
-              // Replace with actual Map snapshot
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Center(
-            child: Icon(Icons.location_on, color: AppColors.foodPrimary, size: 40),
-          ),
-        ),
-        const SizedBox(height: 20),
-        _detailTile(title, name, address, icon),
-      ],
-    );
-  }
-
-  Widget _buildCustomerCard() {
+  Widget _infoCard(String title, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        children: [
-          const CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=a'),
-          ),
-          const SizedBox(height: 15),
-          const Text(
-            "Alex Johnson",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Text(
-            "Regular Customer • 4.9 ★",
-            style: TextStyle(color: Colors.grey),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(child: _actionBtn(Icons.call, "Call", Colors.green)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _actionBtn(Icons.chat_bubble, "Message", primaryColor),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOtpEntry() {
-    return Column(
-      children: [
-        const Text(
-          "Verify Delivery",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          "Enter the 4-digit code provided by the customer",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
-        ),
-        const SizedBox(height: 30),
-        TextField(
-          controller: otpController,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.number,
-          maxLength: 4,
-          style: const TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 20,
-          ),
-          decoration: InputDecoration(
-            counterText: "",
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: Colors.grey.shade200),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: primaryColor, width: 2),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _detailTile(String label, String main, String sub, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Icon(icon, color: primaryColor),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  main,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  sub,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _actionBtn(IconData icon, String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        border: Border.all(color: color.withOpacity(0.2)),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 18, color: color),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(color: color, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(String title, String desc, IconData icon, Color color) {
-    return Container(
+      key: ValueKey(title),
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -713,128 +654,89 @@ class _DeliveryFlowScreenState extends State<DeliveryFlowScreen> {
       ),
       child: Column(
         children: [
-          Icon(icon, size: 60, color: color),
+          Icon(icon, size: 60, color: primaryColor),
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            desc,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.grey, height: 1.5),
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChecklistCard() {
+  Widget _otpCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      key: const ValueKey("otp"),
+      padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Verify Items",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            "Enter Delivery OTP",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 15),
-          _checkItem("1x Whopper Burger"),
-          _checkItem("1x Large Fries"),
-          _checkItem("1x Coke Zero"),
-          const Divider(height: 30),
-          const Row(
-            children: [
-              Icon(Icons.verified_user, color: Colors.blue, size: 20),
-              SizedBox(width: 8),
-              Text(
-                "Order is sealed & tagged",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          const SizedBox(height: 20),
+          TextField(
+            controller: otpController,
+            maxLength: 4,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            style: const TextStyle(
+              fontSize: 28,
+              letterSpacing: 10,
+              fontWeight: FontWeight.bold,
+            ),
+            decoration: const InputDecoration(counterText: ""),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _checkItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          const Icon(Icons.check_circle, color: Colors.green, size: 20),
-          const SizedBox(width: 10),
-          Text(text),
         ],
       ),
     );
   }
 }
 
-/// ---------------- PROGRESS STEPPER COMPONENT ----------------
-class _ProgressStepper extends StatelessWidget {
-  final DeliveryStep currentStep;
-  final Color activeColor;
-
-  const _ProgressStepper({
-    required this.currentStep,
-    required this.activeColor,
-  });
+/// ---------------- DELIVERY COMPLETED SCREEN ----------------
+class DeliveryCompletedFlowScreen extends StatelessWidget {
+  const DeliveryCompletedFlowScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: List.generate(DeliveryStep.values.length, (index) {
-        bool isPast = index < currentStep.index;
-        bool isCurrent = index == currentStep.index;
-
-        return Expanded(
-          child: Row(
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isPast || isCurrent
-                      ? activeColor
-                      : Colors.grey.shade300,
-                  boxShadow: isCurrent
-                      ? [
-                    BoxShadow(
-                      color: activeColor.withOpacity(0.4),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                      : [],
-                ),
-              ),
-              if (index != DeliveryStep.values.length - 1)
-                Expanded(
-                  child: Container(
-                    height: 3,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: isPast ? activeColor : Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      }),
+    return Scaffold(
+      backgroundColor: Colors.green.shade50,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.check_circle, size: 100, color: Colors.green),
+            const SizedBox(height: 20),
+            const Text(
+              "Delivery Completed 🎉",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Thank you for completing the order",
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Back"),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
+
+
+

@@ -12,6 +12,7 @@ void main() async {
     MultiProvider( 
       providers: [
         ChangeNotifierProvider(create: (context) => LocaleProvider()),
+        ChangeNotifierProvider(create: (context) => LocationProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => MealProvider()..loadCategories())
       ],

@@ -27,7 +27,7 @@ class DriverTripStartedScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              image: const DecorationImage(image: AssetImage('assets/images/topHeaderImage.png'),fit: BoxFit.cover),
               boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
             ),
             child: Column(

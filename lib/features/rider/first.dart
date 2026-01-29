@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryde_partner/core/constants/color_constants.dart';
 import 'package:tryde_partner/features/rider/custom_app_bar.dart';
@@ -72,8 +73,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // 👈 status bar background
+        statusBarIconBrightness: Brightness.dark, // Android icons
+        statusBarBrightness: Brightness.dark, // iOS icons
+      ),
+    );
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.transparent,
       appBar: CustomHomeAppBar(
         onDutyChanged: (value) {
           setState(() {
@@ -82,152 +90,99 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: Stack(
+        children: [
+          /// 🖼️ FULL BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/topHeaderImage.png',
+              fit: BoxFit.cover,
+            ),
+          ),
 
-              /// 📊 TODAY PERFORMANCE
-              const Text(
-                "Today's performance",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+          /// 🔲 Optional overlay (readability)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.12),
+            ),
+          ),
 
-              const SizedBox(height: 10),
-
-              Row(
+          /// 🔝 PAGE CONTENT
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  /// 💰 FIRST CARD — TODAY EARNINGS
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.account_balance_wallet,
-                            color: AppColors.success,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Today Earnings",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            "₹ 1,250",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-
-                        ],
-                      ),
+                  /// 📊 TODAY PERFORMANCE
+                  const Text(
+                    "Today's performance",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
 
-                  const SizedBox(width: 10),
+                  const SizedBox(height: 10),
 
-                  /// 🚗 SECOND CARD — TRIPS
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 10,
-                          ),
-                        ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _infoCard(
+                          icon: Icons.account_balance_wallet,
+                          iconColor: AppColors.success,
+                          title: "Today Earnings",
+                          value: "₹ 1,250",
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.route,
-                            color: AppColors.info,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Trips",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            "8",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _infoCard(
+                          icon: Icons.route,
+                          iconColor: AppColors.info,
+                          title: "Trips",
+                          value: "8",
+                        ),
                       ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  if (isOnline && hasRideRequest) _incomingRideCard(),
+
+                  const SizedBox(height: 20),
+
+                  const Text(
+                    "Offers & Rewards",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  ImageAdsBanner(adsImages: adsImages),
+
+                  const SizedBox(height: 12),
+
+                  Text(
+                    "Porter Driver Mode",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.greyText,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 16),
-
-              /// 🚕 INCOMING RIDE
-              if (isOnline && hasRideRequest) _incomingRideCard(),
-
-              const SizedBox(height: 20),
-
-              /// 🎁 OFFERS
-              const Text(
-                "Offers & Rewards",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              ImageAdsBanner(
-                adsImages: adsImages,
-              ),
-
-              const SizedBox(height: 12),
-
-              Text(
-                "Porter Driver Mode",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.greyText,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -437,6 +392,47 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.w500,
               letterSpacing: 0.3,
               color: AppColors.greyText,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoCard({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(10), // ⬅️ 16 → 10
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14), // ⬅️ 18 → 14
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // ⬅️ IMPORTANT
+        children: [
+          Icon(icon, color: iconColor, size: 20), // ⬅️ icon size kam
+          const SizedBox(height: 6),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 11),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 18, // ⬅️ 22 → 18
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

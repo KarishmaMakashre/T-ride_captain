@@ -72,31 +72,60 @@ class _PickupVerificationMapScreenState
             child: Container(
               height: MediaQuery.of(context).size.height * 0.58,
               decoration: const BoxDecoration(
-                color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 12)],
               ),
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _pickupAddress(),
-                    const SizedBox(height: 16),
-                    _ownerDetails(),
-                    const SizedBox(height: 16),
-                    _receiverDetails(),
-                    const SizedBox(height: 20),
-                    _goodsSummary(),
-                    const SizedBox(height: 16),
-                    _otpInput(),
-                    const SizedBox(height: 24),
-                    _startRideButton(),
-                  ],
-                ),
+              child: Stack(
+                children: [
+                  /// 🖼️ BACKGROUND IMAGE
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                      child: Image.asset(
+                        'assets/images/topHeaderImage.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+
+                  /// 🔲 OVERLAY FOR READABILITY
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.92),
+                        borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(24)),
+                      ),
+                    ),
+                  ),
+
+                  /// 📦 CONTENT
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _pickupAddress(),
+                          const SizedBox(height: 16),
+                          _ownerDetails(),
+                          const SizedBox(height: 16),
+                          _receiverDetails(),
+                          const SizedBox(height: 20),
+                          _goodsSummary(),
+                          const SizedBox(height: 16),
+                          _otpInput(),
+                          const SizedBox(height: 24),
+                          _startRideButton(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
+
         ],
       ),
     );

@@ -8,10 +8,7 @@ class DriverTripInProgressScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7F9),
-      appBar: AppBar(
-        title: const Text("Trip In Progress"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Trip In Progress"), centerTitle: true),
 
       body: Column(
         children: [
@@ -34,8 +31,10 @@ class DriverTripInProgressScreen extends StatelessWidget {
                   top: 16,
                   left: 16,
                   child: Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(20),
@@ -57,14 +56,16 @@ class DriverTripInProgressScreen extends StatelessWidget {
           /// 🔽 BOTTOM SHEET
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10,
-                ),
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage('assets/images/topHeaderImage.png'),
+                fit: BoxFit.cover, // important
+              ),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              boxShadow: const [
+                BoxShadow(color: Colors.black12, blurRadius: 10),
               ],
             ),
             child: Column(
@@ -75,8 +76,9 @@ class DriverTripInProgressScreen extends StatelessWidget {
                   children: [
                     const CircleAvatar(
                       radius: 22,
-                      backgroundImage:
-                      NetworkImage("https://i.pravatar.cc/150?img=3"),
+                      backgroundImage: NetworkImage(
+                        "https://i.pravatar.cc/150?img=3",
+                      ),
                     ),
                     const SizedBox(width: 12),
 
@@ -89,12 +91,13 @@ class DriverTripInProgressScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
+                              color: Colors.black, // readable on image
                             ),
                           ),
                           SizedBox(height: 2),
                           Text(
                             "⭐ 4.8 rating",
-                            style: TextStyle(color: Colors.grey),
+                            style: TextStyle(color: Colors.black45),
                           ),
                         ],
                       ),
@@ -161,10 +164,7 @@ class DriverTripInProgressScreen extends StatelessWidget {
                   },
                   child: const Text(
                     "End Trip",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
 
@@ -195,10 +195,7 @@ class DriverTripInProgressScreen extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 2),
               Text(
@@ -227,20 +224,11 @@ class _TripStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
-        ),
+        Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         const SizedBox(height: 6),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );

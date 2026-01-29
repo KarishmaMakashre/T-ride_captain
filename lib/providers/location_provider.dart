@@ -11,17 +11,14 @@ class LocationProvider with ChangeNotifier {
   String get currentAddress => _currentAddress;
   bool get isLoading => _isLoading;
 
-  // ====== GET CURRENT LOCATION & ADDRESS ======
   Future<void> fetchCurrentLocation() async {
     try {
       _isLoading = true;
       notifyListeners();
 
       final data = await GoogleMapsService.getCurrentLocationWithAddress();
-
       _currentLatLng = data['latLng'];
       _currentAddress = data['address'];
-
     } catch (e) {
       debugPrint("Error: $e");
     } finally {
@@ -30,17 +27,14 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // ====== GET ADDRESS FROM LATLNG ======
   Future<void> getAddressFromLatLng(LatLng latLng) async {
     try {
       _isLoading = true;
       notifyListeners();
 
       final address = await GoogleMapsService.getAddressFromLatLng(latLng);
-
       _currentLatLng = latLng;
       _currentAddress = address;
-
     } catch (e) {
       debugPrint("Error fetching address: $e");
     } finally {
@@ -49,13 +43,11 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // ====== SET ADDRESS MANUALLY ======
   void setAddress(String newAddress) {
     _currentAddress = newAddress;
     notifyListeners();
   }
 
-  // ====== SET LAT LNG MANUALLY ======
   void setLatLng(LatLng latLng) {
     _currentLatLng = latLng;
     notifyListeners();

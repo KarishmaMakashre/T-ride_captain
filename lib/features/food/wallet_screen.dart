@@ -9,26 +9,45 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(sw(context) * 0.04),
-          child: Column(
-            children: [
-              _walletCard(context),
-              SizedBox(height: sh(context) * 0.025),
-              _summaryRow(context),
-              SizedBox(height: sh(context) * 0.025),
-              _transactionTitle(context),
-              SizedBox(height: sh(context) * 0.01),
-              _transactionTile(context, "Order #1234", "+ ₹120"),
-              SizedBox(height: sh(context) * 0.01),
-              _transactionTile(context, "Order #1233", "+ ₹95"),
-              SizedBox(height: sh(context) * 0.01),
-              _transactionTile(context, "Order #1232", "+ ₹140"),
-            ],
+      body: Stack(
+        children: [
+          /// 🔥 BACKGROUND IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              "assets/images/topHeaderImage.png",
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
+
+          /// 🔥 DARK OVERLAY
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.25),
+            ),
+          ),
+
+          /// 🔥 CONTENT
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(sw(context) * 0.04),
+              child: Column(
+                children: [
+                  _walletCard(context),
+                  SizedBox(height: sh(context) * 0.025),
+                  _summaryRow(context),
+                  SizedBox(height: sh(context) * 0.025),
+                  _transactionTitle(context),
+                  SizedBox(height: sh(context) * 0.01),
+                  _transactionTile(context, "Order #1234", "+ ₹120"),
+                  SizedBox(height: sh(context) * 0.01),
+                  _transactionTile(context, "Order #1233", "+ ₹95"),
+                  SizedBox(height: sh(context) * 0.01),
+                  _transactionTile(context, "Order #1232", "+ ₹140"),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -126,6 +145,7 @@ class WalletScreen extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: sw(context) * 0.045,
+          color: Colors.white,
         ),
       ),
     );

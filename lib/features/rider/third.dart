@@ -36,13 +36,16 @@ class DriverNavigatePickupScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              image: const DecorationImage(
+                image: AssetImage('assets/images/topHeaderImage.png'),
+                fit: BoxFit.cover,
+              ),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(20),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withOpacity(0.04),
                   blurRadius: 10,
                   offset: const Offset(0, -4),
                 ),
@@ -97,6 +100,7 @@ class DriverNavigatePickupScreen extends StatelessWidget {
                 /// 🚦 ARRIVED BUTTON
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xff3177D0),
                     minimumSize: const Size(double.infinity, 54),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -124,6 +128,7 @@ class DriverNavigatePickupScreen extends StatelessWidget {
               ],
             ),
           ),
+
         ],
       ),
     );

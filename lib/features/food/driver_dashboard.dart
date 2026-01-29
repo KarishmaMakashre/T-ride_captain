@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tryde_partner/features/food/order_screen.dart';
 import 'package:tryde_partner/features/food/partner_profile_screen.dart';
 import 'package:tryde_partner/features/food/wallet_screen.dart';
+import 'package:tryde_partner/features/food/widgets/top_header.dart';
 import 'package:tryde_partner/providers/location_provider.dart';
 import '../../core/constants/color_constants.dart';
 import 'order_req_screen.dart';
@@ -12,6 +11,7 @@ double sw(BuildContext context) => MediaQuery.of(context).size.width;
 double sh(BuildContext context) => MediaQuery.of(context).size.height;
 
 /// ===================== MAIN DASHBOARD =====================
+
 class PartnerDashboardScreen extends StatefulWidget {
   const PartnerDashboardScreen({super.key});
 
@@ -22,7 +22,7 @@ class PartnerDashboardScreen extends StatefulWidget {
 
 class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
   int _currentIndex = 0;
-  bool _isOnline = false; // 🔴 default OFF (recommended)
+  bool _isOnline = false;
 
   static const String onlineSoundUrl =
       "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg";
@@ -33,130 +33,176 @@ class _PartnerDashboardScreenState extends State<PartnerDashboardScreen> {
   final List<Widget> _screens = const [
     DashboardHome(),
     OrderListScreen(),
-    // StoreHomeScreen(),
     WalletScreen(),
     PartnerProfileScreen(),
   ];
 
-  @override
-void initState() {
-  super.initState();
-  Future.microtask(() {
-    context.read<LocationProvider>().fetchCurrentLocation();
-  });
-}
+  void onStatusChanged(bool value) {
+    setState(() {
+      _isOnline = value;
+    });
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<LocationProvider>().fetchCurrentLocation();
+    });
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.grey100,
-      appBar: _buildAppBar(),
+      backgroundColor: Colors.transparent,
+      appBar: TopHeader(
+        isOnline: _isOnline,
+        onStatusChanged: onStatusChanged,
+      ),
 
-      /// 🔥 MAIN LOGIC
-      body:_screens[_currentIndex],   // ❌ OFFLINE → Dashboard
+      body: Stack(
+        children: [
+          /// 🌄 GLOBAL BACKGROUND IMAGE
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/topHeaderImage.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
 
-      /// 🔒 Bottom Nav disabled when online
-    bottomNavigationBar: PartnerBottomNav(
-  currentIndex: _currentIndex,
-  onTap: (i) {
-    setState(() => _currentIndex = i);
-  },
-),
+          /// 🌑 GLOBAL OVERLAY
+          Container(
+            color: Colors.black.withOpacity(0.18),
+          ),
+
+          /// 🚀 PAGE CONTENT
+          _screens[_currentIndex],
+        ],
+      ),
+
+      bottomNavigationBar: PartnerBottomNav(
+        currentIndex: _currentIndex,
+        onTap: (i) => setState(() => _currentIndex = i),
+      ),
     );
   }
 
-  AppBar _buildAppBar() {
-  return AppBar(
-    backgroundColor: AppColors.white,
-    elevation: 0,
-    title: Consumer<LocationProvider>(
-      builder: (context, locationProvider, _) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Welcome 👋",
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
-            ),
-
-            const Text(
-              "Delivery Partner",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 4),
-
-            /// 📍 LOCATION
-            locationProvider.isLoading
-                ? const Text(
-                    "Fetching location...",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  )
-                : Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 14,
-                        color: AppColors.foodPrimary,
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          locationProvider.currentAddress.isNotEmpty
-                              ? locationProvider.currentAddress
-                              : "Location not available",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-          ],
-        );
-      },
-    ),
-    actions: [
-      OnlineStatusToggle(
-        initialStatus: _isOnline,
-        onChanged: (value) {
-          setState(() {
-            _isOnline = value;
-            if (value) _currentIndex = 0;
-          });
-
-          if (value) {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => const OrderRequestBottomSheet(),
-            );
-          }
-        },
-      ),
-
-      IconButton(
-        icon: const Icon(Icons.notifications_none),
-        onPressed: () {},
-      ),
-
-    ],
-  );
-}
-
+  /// ================= APP BAR =================
+  // AppBar _buildAppBar() {
+  //   return AppBar(
+  //     backgroundColor: AppColors.white,
+  //     elevation: 0,
+  //     toolbarHeight: 90,
+  //     titleSpacing: 0,
+  //
+  //     title: Consumer<LocationProvider>(
+  //       builder: (context, locationProvider, _) {
+  //         return Row(
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.only(left: 16, right: 12),
+  //               child: CircleAvatar(
+  //                 radius: 22,
+  //                 backgroundColor:
+  //                 AppColors.foodPrimary.withOpacity(0.1),
+  //                 child: const Icon(
+  //                   Icons.person,
+  //                   color: AppColors.foodPrimary,
+  //                 ),
+  //               ),
+  //             ),
+  //
+  //             Expanded(
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   const Text(
+  //                     "Welcome 👋",
+  //                     style: TextStyle(
+  //                       fontSize: 12,
+  //                       color: AppColors.textSecondary,
+  //                     ),
+  //                   ),
+  //                   const Text(
+  //                     "Delivery Partner",
+  //                     style: TextStyle(
+  //                       fontSize: 18,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 2),
+  //
+  //                   locationProvider.isLoading
+  //                       ? const Text(
+  //                     "Fetching location...",
+  //                     style: TextStyle(
+  //                       fontSize: 12,
+  //                       color: AppColors.textSecondary,
+  //                     ),
+  //                   )
+  //                       : Row(
+  //                     children: [
+  //                       const Icon(
+  //                         Icons.location_on,
+  //                         size: 14,
+  //                         color: AppColors.foodPrimary,
+  //                       ),
+  //                       const SizedBox(width: 4),
+  //                       Expanded(
+  //                         child: Text(
+  //                           locationProvider
+  //                               .currentAddress.isNotEmpty
+  //                               ? locationProvider.currentAddress
+  //                               : "Location not available",
+  //                           maxLines: 1,
+  //                           overflow: TextOverflow.ellipsis,
+  //                           style: const TextStyle(
+  //                             fontSize: 12,
+  //                             color: AppColors.textSecondary,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     ),
+  //
+  //     actions: [
+  //       OnlineStatusToggle(
+  //         initialStatus: _isOnline,
+  //         onChanged: (value) {
+  //           setState(() {
+  //             _isOnline = value;
+  //             if (value) _currentIndex = 0;
+  //           });
+  //
+  //           if (value) {
+  //             showModalBottomSheet(
+  //               context: context,
+  //               isScrollControlled: true,
+  //               backgroundColor: Colors.transparent,
+  //               builder: (_) => const OrderRequestBottomSheet(),
+  //             );
+  //           }
+  //         },
+  //       ),
+  //       const SizedBox(width: 8),
+  //       IconButton(
+  //         icon: const Icon(Icons.notifications_none),
+  //         onPressed: () {},
+  //       ),
+  //     ],
+  //   );
+  // }
 }
 
 /// ===================== HOME =====================
@@ -165,31 +211,53 @@ class DashboardHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(sw(context) * 0.04),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          EarningsHeroCard(),
-          SizedBox(height: 20),
+    return Stack(
+      children: [
+        /// 🔥 BACKGROUND IMAGE
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/images/topHeaderImage.png",
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
 
-          SectionTitle("Earnings Summary"),
-          SizedBox(height: 10),
-          EarningsSummary(),
+        /// 🔥 OPTIONAL DARK OVERLAY (remove if not needed)
+        Container(
+          color: Colors.black.withOpacity(0.12),
+        ),
 
-          SizedBox(height: 30),
-          SectionTitle("Order History"),
-          OrderHistory(),
+        /// 🔥 MAIN CONTENT
+        SingleChildScrollView(
+          padding: EdgeInsets.all(sw(context) * 0.04),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              EarningsHeroCard(),
+              SizedBox(height: 20),
 
-          SizedBox(height: 20),
-          SectionTitle("Wallet Balance"),
-          WalletBalanceCard(),
+              SectionTitle("Earnings Summary"),
+              SizedBox(height: 10),
+              EarningsSummary(),
 
-          SizedBox(height: 20),
-          SectionTitle("Ratings & Reviews"),
-          RatingsCard(),
-        ],
-      ),
+              SizedBox(height: 30),
+              SectionTitle("Order History"),
+              OrderHistory(),
+
+              SizedBox(height: 20),
+              SectionTitle("Wallet Balance"),
+              WalletBalanceCard(),
+
+              SizedBox(height: 20),
+              SectionTitle("Ratings & Reviews"),
+              RatingsCard(),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
